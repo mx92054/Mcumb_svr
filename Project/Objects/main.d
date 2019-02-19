@@ -33,7 +33,5 @@
 .\objects\main.o: ..\User\..\bsp\SysTick.h
 .\objects\main.o: ..\User\..\bsp\bsp_exti.h
 .\objects\main.o: ..\User\..\bsp\bsp_innerflash.h
-.\objects\main.o: ..\User\..\bsp\adc.h
 .\objects\main.o: ..\User\modbus_svr.h
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\main.o: ..\User\SBG_Comm.h
