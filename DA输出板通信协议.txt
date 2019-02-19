@@ -1,1 +1,27 @@
+1、模拟量输出板接线情况
+MCU:STM32F103C8T6
+DA: AD5754
 
+串口：  
+    TX:     PA2
+    RX:     PA3
+AD控制板：
+    SYNC    PA8 
+    Active Low Input. This is the frame synchronization signal for the serial interface. While SYNC is low, data is
+    transferred on the falling edge of SCLK. Data is latched on the rising edge of SYNC.    
+    SCLK    PA9
+    Serial Clock Input. Data is clocked into the shift register on the falling edge of SCLK. This operates at clock
+    speeds up to 30 MHz.
+    SDIN    PA10
+    Serial Data Input. Data must be valid on the falling edge of SCLK.
+    LDAC    PA11
+    Load DAC, Logic Input. This is used to update the DAC registers and consequently, the analog outputs. When
+    this pin is tied permanently low, the addressed DAC register is updated on the rising edge of SYNC. If LDAC is
+    held high during the write cycle, the DAC input register is updated, but the output update is held off until the
+    falling edge of LDAC. In this mode, all analog outputs can be updated simultaneously on the falling edge of
+    LDAC. The LDAC pin must not be left unconnected
+    CLK     PA12
+    Active Low Input. Asserting this pin sets the DAC registers to zero-scale code or midscale code (user-selectable).
+    SDO     PB15
+    Serial Data Output. Used to clock data from the serial register in daisy-chain or readback mode. Data is
+    clocked out on the rising edge of SCLK and is valid on the falling edge of SCLK.

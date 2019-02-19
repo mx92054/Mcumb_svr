@@ -5,7 +5,7 @@
 #include "stm32f10x.h"
 #include <stdio.h>
 
-#define USE_USART1
+#define USE_USART2
 
 //-------------------´®¿Ú1ºê¶¨Òå------------------------------------
 #ifdef USE_USART1

@@ -10,12 +10,13 @@
       <TargetName>强电控制板</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
+      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F103VE</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F1xx_DFP.2.2.0</PackID>
+          <PackID>Keil.STM32F1xx_DFP.1.1.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00080000) IRAM(0x20000000,0x00010000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -323,6 +324,7 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
+            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>1</v6Lang>
             <v6LangP>1</v6LangP>
@@ -539,11 +541,6 @@
               <FileType>1</FileType>
               <FilePath>..\User\Modbus_svr.c</FilePath>
             </File>
-            <File>
-              <FileName>SBG_Comm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\SBG_Comm.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -583,6 +580,11 @@
               <FileName>adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Bsp\adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_da.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Bsp\spi_da.c</FilePath>
             </File>
           </Files>
         </Group>
