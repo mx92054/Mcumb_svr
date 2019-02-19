@@ -1,0 +1,26 @@
+0,	A相电流
+1，	B相电流
+2，	C相电流
+3，	DI1
+4,	DI2
+5,	DI3
+6,	DI4
+7,	DI5
+10,	DO1
+11,	DO2
+12,	DO3
+13,	DO4
+14,	DO5
+15,	DO6
+20，	时间戳
+21，	ROLL
+22,	PITCH
+23,	YAW
+24,	X Axis acculate
+25,	Y Axis acculate
+26,	Z Axis acculate
+27,	Grad X
+28	Grad Y
+29,	Grad Z
+30,	SBG Tempature
+31-71,	Current value	
