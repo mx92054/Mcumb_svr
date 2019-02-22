@@ -12,7 +12,6 @@ __IO uint16_t ADC_ConvertedValue[CYCLE_LEN * 3];
 uint16_t wGraph[CYCLE_LEN * 3];
 int bEffectHandle = 0;
 
-extern short wReg[];
 /*
  * 函数名：ADC1_GPIO_Config
  * 描述  ：使能ADC1和DMA1的时钟，初始化PA.1 PA.2 PA.3
@@ -170,7 +169,6 @@ void DMA1_Channel1_IRQHandler(void)
 		{
 			memcpy((void *)wGraph, (void *)ADC_ConvertedValue, CYCLE_LEN * 3 * 2);
 			bEffectHandle = 1;
-			wReg[16]++;
 		}
 	}
 }

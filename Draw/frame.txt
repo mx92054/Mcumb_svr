@@ -1,0 +1,60 @@
+void delay()
+{
+	static uint8_t i;
+	for(i=0;i<50;i++);
+}
+void DAC_SendData( uint8_t sendbuf[],uint8_t recvbuf[])
+{
+	static uint8_t i,j;
+	static uint8_t data ;
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);	// ÏÈÒª½«SYNCÖÃµÍ£¬½áÊøºóÖÃ¸ß
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);	// Ê±ÖÓ  ¸ß
+	delay();	
+	for(j=0;j<3;j++)
+	{
+		data = sendbuf[j];
+		for(i=0;i<8;i++)
+		{
+			
+			if( (data & 0x80) == 0 )
+				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);	// SDIN  Êä³ö
+			else
+				HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);	// SDIN  Êä³ö
+			delay();
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);	// Ê±ÖÓ µÍ
+			
+			delay();
+			if( HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15) ==GPIO_PIN_RESET)  // SDO ÊäÈë
+				recvbuf[j] &= 0xFE;
+			else
+				recvbuf[j] |= 0x01;
+			recvbuf[j] <<= 1;			
+			data <<= 1 ;			
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);	// Ê±ÖÓ  ¸ß
+		}		
+	}
+	
+	delay();
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);	
+}
+HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);	// CLR  high
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET);	// LDAC  low
+	
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);	// Á¿³Ì SYNC
+	// ÉèÖÃÁ¿³Ì
+	DACBufT[0] = 0x0C ;
+	DACBufT[1] = 0x00 ;
+	DACBufT[2] = 0x00 ;
+	DAC_SendData( DACBufT, DACBufR );
+	
+	// ´ò¿ªÃ¿Ò»Â·DACµçÔ´
+	DACBufT[0] = 0x10 ;
+	DACBufT[1] = 0x00 ;
+	DACBufT[2] = 0x0F ;
+	DAC_SendData( DACBufT, DACBufR );
+	
+	// ³õÊ¼»¯Ê±£¨°üÀ¨¸´Î»Ê±£ËÄÂ·È«Í¬ÑùÊä³ö0
+	DACBufT[0] = 0x04 ;
+	DACBufT[1] = 0x00 ;
+	DACBufT[2] = 0x00 ;
+	DAC_SendData( DACBufT, DACBufR );

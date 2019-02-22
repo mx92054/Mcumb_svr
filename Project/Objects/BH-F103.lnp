@@ -28,6 +28,7 @@
 ".\objects\main.o"
 ".\objects\stm32f10x_it.o"
 ".\objects\modbus_svr.o"
+".\objects\mbsvr_comm.o"
 ".\objects\bsp_led.o"
 ".\objects\bsp_exti.o"
 ".\objects\systick.o"
@@ -35,6 +36,6 @@
 ".\objects\adc.o"
 ".\objects\spi_da.o"
 --library_type=microlib --strict --scatter ".\Objects\BH-F103.sct"
---summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list ".\Listings\BH-F103.map" -o .\Objects\BH-F103.axf

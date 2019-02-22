@@ -6,16 +6,12 @@
 #include "..\bsp\bsp_exti.h"
 #include "..\bsp\bsp_innerflash.h"
 #include "..\bsp\spi_da.h"
-
 #include "modbus_svr.h"
 
 //--------------------------------------------------------------------------------
 int main(void)
 {
 	SysTick_Init();
-	InternalFlashRead(wReg, 200);
-	BOOTNUM++;
-	bSaved = 1;
 
 	LED_GPIO_Config();
 	Modbus_init();
@@ -38,10 +34,9 @@ int main(void)
 			IWDG_Feed();
 		}
 
-		if (GetTimer(3) && bSaved)
+		if (GetTimer(3))
 		{
-			InternalFlashWrite(wReg, 200);
-			bSaved = 0;
+			ModbusSvr_save_para(&mblock1);
 		}
 	}
 }

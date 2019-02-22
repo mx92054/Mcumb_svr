@@ -9,8 +9,6 @@
 
 #include "bsp_led.h"
 
-extern short wReg[];
-
 /**
   * @brief  初始化控制LED的IO
   * @param  无
@@ -35,20 +33,6 @@ void LED_GPIO_Config(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_Init(LED1_GPIO_PORT, &GPIO_InitStructure);
 
-	//--------------Digital Output-------------------------------
-	GPIO_InitStructure.GPIO_Pin = DO_GPIO_PINS;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_Init(DO_GPIO_PORT, &GPIO_InitStructure);
-
-	for (n = 0; n < 6; n++)
-		GPIO_ResetBits(DO_GPIO_PORT, GPIO_Pin_7 >> n);
-
-	//--------------Digital Input_-------------------------------
-	GPIO_InitStructure.GPIO_Pin = DI_GPIO_PINS;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-	GPIO_Init(DI_GPIO_PORT, &GPIO_InitStructure);
 }
 
 /**
@@ -58,15 +42,7 @@ void LED_GPIO_Config(void)
   */
 void OutputDigital(void)
 {
-	int n;
-
-	for (n = 0; n < 6; n++)
-	{
-		if (wReg[10 + n] == 0)
-			GPIO_ResetBits(DO_GPIO_PORT, GPIO_Pin_7 >> n);
-		else
-			GPIO_SetBits(DO_GPIO_PORT, GPIO_Pin_7 >> n);
-	}
+	;
 }
 
 /**
@@ -76,11 +52,11 @@ void OutputDigital(void)
   */
 void InputDigital(void)
 {
-	int n;
+	int n,t;
 
 	for (n = 0; n < 5; n++)
 	{
-		wReg[3 + n] = GPIO_ReadInputDataBit(DI_GPIO_PORT, GPIO_Pin_11 << n);
+		t = GPIO_ReadInputDataBit(DI_GPIO_PORT, GPIO_Pin_11 << n);
 	}
 }
 
@@ -90,35 +66,6 @@ void BKP_Init(void)
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
 	PWR_BackupAccessCmd(ENABLE);
 	BKP_ClearFlag();
-}
-
-//----------------------------------------------------------------------------------
-void ReloadParameter(void)
-{
-	int i;
-
-	// Load default parameter from BKP area
-	for (i = 100; i < 110; i++)
-		wReg[i] = BKP_ReadBackupRegister(BKP_DR1 + (i - 100) * 4);
-	for (i = 110; i < 120; i++)
-		wReg[i] = BKP_ReadBackupRegister(BKP_DR11 + (i - 110) * 4);
-
-	// Reboot counter
-	wReg[120] = BKP_ReadBackupRegister(BKP_DR21) + 1;
-	BKP_WriteBackupRegister(BKP_DR20, wReg[120]);
-}
-
-//----------------------------------------------------------------------------------
-void SaveaBKPParameter(void)
-{
-	int i;
-
-	// Load default parameter from BKP area
-	for (i = 0; i < 10; i++)
-		BKP_WriteBackupRegister(BKP_DR1 + 4 * i, wReg[100 + i]);
-
-	for (i = 0; i < 10; i++)
-		BKP_WriteBackupRegister(BKP_DR10 + 4 * i, wReg[110 + i]);
 }
 
 //--------------------------------------------------------------

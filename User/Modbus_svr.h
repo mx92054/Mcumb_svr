@@ -3,7 +3,7 @@
 #define __MODBUS_COM__
 
 #include "stm32f10x.h"
-#include <stdio.h>
+#include "Mbsvr_comm.h"
 
 #define USE_USART2
 
@@ -49,37 +49,12 @@
 #define MODBUS_USART_IRQHandler USART2_IRQHandler
 #endif
 
-//-------------------MODBUS DATA DEFINE--------------------------------
-#define REG_LEN 200
-#define COIL_LEN 200
-#define BIT2BYTE(n) ((((n)&0x0007) == 0) ? ((n) >> 3) : (((n) >> 3) + 1))
-#define SETBIT_BYTE(n, bit) ((n) | (0x01 << (bit)))
-#define RESETBIT_BYTE(n, bit) ((n) & (~(0x01 << (bit))))
-#define GETBIT_BYTE(n, bit) (((n) >> (bit)) & 0x01)
-
-#define ADDRESS wReg[100]  //当前站地址
-#define BAUDRATE wReg[101] //通信速度
-#define BOOTNUM wReg[102]  //启动次数
-
-extern short wReg[];
-extern short coils[];
-extern u8 bSaved;
-
+extern Modbus_block mblock1;
 //------------------Function Define ----------------------------------
 void Modbus_init(void);
 void Modbus_task(void);
 void ModbusTimer(void);
-u16 CRC16(const uint8_t *nData, uint8_t wLength);
 void MODBUS_USART_IRQHandler(void);
-void SaveToBKP(u16 nAddr, u16 val);
-
-static void Error_response(u8 errno);
-static void Normal_response(void);
-static u8 Modbus_Procotol_Chain(void);
-
-void Usart_SendByte(USART_TypeDef *pUSARTx, uint8_t ch);
-void Usart_SendString(USART_TypeDef *pUSARTx, char *str);
-void Usart_SendHalfWord(USART_TypeDef *pUSARTx, uint16_t ch);
 
 #endif
 //------------end fo file----------------------------------

@@ -53,8 +53,6 @@ void OutputDigital(void);
 void InputDigital(void);
 
 void BKP_Init(void);
-void ReloadParameter(void);
-void SaveaBKPParameter(void);
 
 void IWDG_Configuration(void);
 void IWDG_Feed(void);
