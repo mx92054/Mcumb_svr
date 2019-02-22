@@ -72,7 +72,6 @@ void Modbus_init(void)
 	ModbusSvr_block_init(&mblock1);
 
 	MODBUS_NVIC_Configuration();
-
 	baud = mblock1.baudrate * 100;
 	MODBUS_Config(baud);
 
@@ -112,14 +111,7 @@ void MODBUS_USART_IRQHandler(void)
 	if (USART_GetITStatus(MODBUS_USARTx, USART_IT_RXNE) != RESET) //判断读寄存器是否非空
 	{
 		ch = USART_ReceiveData(MODBUS_USARTx); //将读寄存器的数据缓存到接收缓冲区里
-		if (mblock1.bFrameStart)
-		{
-			if (ch != mblock1.station && mblock1.pos_msg == 0)
-				mblock1.bFrameStart = 0;
-
-			mblock1.isr_buf[mblock1.pos_msg++] = ch;
-		}
-		mblock1.nMBInterval = 0;
+		ModbusSvr_isr(&mblock1, ch);
 	}
 
 	if (USART_GetITStatus(MODBUS_USARTx, USART_IT_TXE) != RESET)

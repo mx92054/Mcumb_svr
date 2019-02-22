@@ -5,7 +5,7 @@
 #include "stm32f10x.h"
 #include "Mbsvr_comm.h"
 
-#define USE_USART2
+#define USE_USART1
 
 //-------------------´®¿Ú1ºê¶¨Òå------------------------------------
 #ifdef USE_USART1

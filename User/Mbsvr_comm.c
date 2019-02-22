@@ -21,8 +21,8 @@ void ModbusSvr_block_init(Modbus_block *pblk)
 
     pblk->wReg[102]++; //启动次数
 
-    pblk->baudrate = pblk->wReg[100];
-    pblk->station = pblk->wReg[101];
+    pblk->station = pblk->wReg[100];
+    pblk->baudrate = pblk->wReg[101];
 
     switch (pblk->baudrate)
     {
@@ -299,11 +299,42 @@ u8 ModbusSvr_Procotol_Chain(Modbus_block *pblk)
  * ******************************************************/
 void ModbusSvr_save_para(Modbus_block *pblk)
 {
+    short tmp;
+
     if (pblk->bSaved)
     {
+        tmp = pblk->wReg[100]; //站地址设置检查
+        if (tmp < 0 || tmp > 255)
+            pblk->wReg[100] = 1;
+
+        tmp = pblk->wReg[101]; //波特率设置检查
+        if (tmp != 96 && tmp != 192 && tmp != 384 && tmp != 1152)
+            pblk->wReg[101] = 1152;
+
+        pblk->station = pblk->wReg[100];
+        pblk->baudrate = pblk->wReg[101];
+
         InternalFlashWrite(pblk->wReg, 200);
         pblk->bSaved = 0;
     }
+}
+
+/*********************************************************
+ * @desc:  中断处理程序
+ * @param: pblk-指向数据块的指针
+ *         pUSARTx-通信端口
+ * @retval:None
+ * ******************************************************/
+void ModbusSvr_isr(Modbus_block *pblk, u8 ch)
+{
+    if (pblk->bFrameStart)
+    {
+        if (ch != pblk->station && pblk->pos_msg == 0)
+            pblk->bFrameStart = 0;
+
+        pblk->isr_buf[pblk->pos_msg++] = ch;
+    }
+    pblk->nMBInterval = 0;
 }
 
 //-------------------------------------------------------------------------------

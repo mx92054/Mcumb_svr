@@ -15,7 +15,7 @@ typedef struct tag_ModbusModule
     short baudrate;
     short station;
 
-    short wReg[REG_LEN];  //保持存储器
+    short wReg[REG_LEN];   //保持存储器
     short coils[COIL_LEN]; //继电器存储器
 
     u8 buffer[512]; //缓冲区
@@ -38,6 +38,7 @@ void ModbusSvr_error_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx);
 void ModbusSvr_task(Modbus_block *pblk, USART_TypeDef *pUSARTx);
 u8 ModbusSvr_Procotol_Chain(Modbus_block *pblk);
 void ModbusSvr_save_para(Modbus_block *pblk);
+void ModbusSvr_isr(Modbus_block *pblk, u8 ch);
 
 u16 CRC16(const uint8_t *nData, uint8_t wLength);
 void Usart_SendByte(USART_TypeDef *pUSARTx, uint8_t ch);

@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>强电控制板</TargetName>
+      <TargetName>modbus服务器</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <TargetOption>
