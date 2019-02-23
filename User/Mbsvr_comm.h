@@ -24,8 +24,8 @@ typedef struct tag_ModbusModule
 
     u8 pos_msg;           //接受指针
     u8 frame_len;         //命令帧长度
-    u8 trans_len;         //相应帧长度
-    u8 bFrameStart;       //开始接受相应标志
+    u8 trans_len;         //响应帧长度
+    u8 bFrameStart;       //开始接受响应标志
     u8 uFrameInterval;    //帧间隙
     u8 errno;             //当前错误代号
     __IO u16 nMBInterval; //接受字符间隙计数器
