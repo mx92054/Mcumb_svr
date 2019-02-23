@@ -34,10 +34,8 @@ typedef struct tag_ModbusModule
 } Modbus_block;
 
 void ModbusSvr_block_init(Modbus_block *pblk); //初始化
-void ModbusSvr_normal_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx);
-void ModbusSvr_error_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx);
 void ModbusSvr_task(Modbus_block *pblk, USART_TypeDef *pUSARTx);
-u8 ModbusSvr_Procotol_Chain(Modbus_block *pblk);
+u8 ModbusSvr_procotol_chain(Modbus_block *pblk);
 void ModbusSvr_save_para(Modbus_block *pblk);
 void ModbusSvr_isr(Modbus_block *pblk, USART_TypeDef *pUSARTx);
 void ModbusSvr_NVIC_Configuration(u8 nChn);

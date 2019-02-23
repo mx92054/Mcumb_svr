@@ -76,7 +76,7 @@ void ModbusSvr_block_init(Modbus_block *pblk)
  *         pUSARTx-通信端口
  * @retval:None
  * ******************************************************/
-void ModbusSvr_normal_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx)
+static void ModbusSvr_normal_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx)
 {
     u16 uCrc1;
     int i;
@@ -101,7 +101,7 @@ void ModbusSvr_normal_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx)
  *         pUSARTx-通信端口
  * @retval:None
  * ******************************************************/
-void ModbusSvr_error_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx)
+static void ModbusSvr_error_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx)
 {
     u16 uCrc1;
     int i;
@@ -145,10 +145,10 @@ void ModbusSvr_task(Modbus_block *pblk, USART_TypeDef *pUSARTx)
 
         if (pblk->frame_len >= 8 && pblk->tsk_buf[0] == pblk->station)
         {
-            pblk->errno = ModbusSvr_Procotol_Chain(pblk); //协议解析
-            if (pblk->errno)                              //协议协议错误
+            pblk->errno = ModbusSvr_procotol_chain(pblk); //handle protocol 
+            if (pblk->errno)                              //occur error
                 ModbusSvr_error_respose(pblk, pUSARTx);
-            else //协议解释正确
+            else //occur finish
             {
                 ModbusSvr_normal_respose(pblk, pUSARTx);
                 tick = GetCurTick() ;
@@ -166,7 +166,7 @@ void ModbusSvr_task(Modbus_block *pblk, USART_TypeDef *pUSARTx)
  *         pUSARTx-通信端口
  * @retval:None
  * ******************************************************/
-u8 ModbusSvr_Procotol_Chain(Modbus_block *pblk)
+u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
 {
     u16 reg_adr, uCrc1, uCrc2;
     u16 i, data_len, cur_adr;
@@ -313,7 +313,7 @@ u8 ModbusSvr_Procotol_Chain(Modbus_block *pblk)
         return 0;
     }
 
-    return 0;
+    return 1;  //ILLEGAL_FUNCTION
 }
 /*********************************************************
  * @desc:  参数寄存器内容保存
