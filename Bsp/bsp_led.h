@@ -49,10 +49,7 @@
 #define LED1_ON digitalHi(LED1_GPIO_PORT, LED1_GPIO_PIN)
 
 void LED_GPIO_Config(void);
-
-
 void BKP_Init(void);
-
 void IWDG_Configuration(void);
 void IWDG_Feed(void);
 

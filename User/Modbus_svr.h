@@ -41,6 +41,7 @@
 #define COM2_IRQHandler USART2_IRQHandler
 
 extern Modbus_block mblock1;
+extern Modbus_block mblock2;
 //------------------Function Define ----------------------------------
 void Modbu_COM1_init(void);
 void Modbus_COM1_task(void);

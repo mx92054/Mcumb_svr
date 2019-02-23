@@ -28,6 +28,7 @@
 .\objects\main.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\main.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h
 .\objects\main.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
+.\objects\main.o: D:\ExtProgram\keil\ARM\ARMCC\Bin\..\include\string.h
 .\objects\main.o: ..\User\..\bsp\bsp_led.h
 .\objects\main.o: ..\User\..\bsp\SysTick.h
 .\objects\main.o: ..\User\..\bsp\bsp_exti.h

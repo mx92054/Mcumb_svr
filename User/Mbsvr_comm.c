@@ -8,17 +8,15 @@
  * ******************************************************/
 void ModbusSvr_NVIC_Configuration(u8 nChn)
 {
-	NVIC_InitTypeDef NVIC_InitStructure;
+    NVIC_InitTypeDef NVIC_InitStructure;
 
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-	NVIC_InitStructure.NVIC_IRQChannel = nChn; //COM1_IRQ;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    NVIC_InitStructure.NVIC_IRQChannel = nChn; //COM1_IRQ;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 }
-
-
 
 /*********************************************************
  * @desc:  modbus data initial
@@ -28,7 +26,7 @@ void ModbusSvr_NVIC_Configuration(u8 nChn)
 void ModbusSvr_block_init(Modbus_block *pblk)
 {
     short tmp;
-    InternalFlashRead(pblk->wReg, 200);
+    InternalFlashRead(pblk->wReg + 100, 100);
 
     tmp = pblk->wReg[100]; //站地址设置检查
     if (tmp < 0 || tmp > 255)
@@ -333,7 +331,7 @@ void ModbusSvr_save_para(Modbus_block *pblk)
         pblk->station = pblk->wReg[100];
         pblk->baudrate = pblk->wReg[101];
 
-        InternalFlashWrite(pblk->wReg, 200);
+        InternalFlashWrite(pblk->wReg + 100, 100);
         pblk->bSaved = 0;
     }
 }

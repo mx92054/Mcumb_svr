@@ -1,4 +1,5 @@
 #include "stm32f10x.h"
+#include <string.h>
 
 #include "..\bsp\bsp_led.h"
 #include "..\bsp\SysTick.h"
@@ -37,6 +38,12 @@ int main(void)
 
 		if (GetTimer(3))
 		{
+			if ( mblock1.bSaved )
+				memcpy(mblock2.wReg, mblock1.wReg, 200);
+			if ( mblock2.bSaved )
+				memcpy(mblock1.wReg, mblock2.wReg, 200);
+				
+			ModbusSvr_save_para(&mblock1);
 			ModbusSvr_save_para(&mblock1);
 		}
 	}
