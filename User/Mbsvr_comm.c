@@ -1,5 +1,6 @@
 #include "Mbsvr_comm.h"
 #include "..\bsp\bsp_innerflash.h"
+#include "..\bsp\SysTick.h"
 
 /*********************************************************
  *	@brief	中断初始化
@@ -131,6 +132,7 @@ void ModbusSvr_error_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx)
 void ModbusSvr_task(Modbus_block *pblk, USART_TypeDef *pUSARTx)
 {
     u8 *ptr;
+    u32 tick ;
 
     if (pblk->nMBInterval > pblk->uFrameInterval) //通信帧间隔时间已到，缓冲区域切换
     {
@@ -147,7 +149,12 @@ void ModbusSvr_task(Modbus_block *pblk, USART_TypeDef *pUSARTx)
             if (pblk->errno)                              //协议协议错误
                 ModbusSvr_error_respose(pblk, pUSARTx);
             else //协议解释正确
+            {
                 ModbusSvr_normal_respose(pblk, pUSARTx);
+                tick = GetCurTick() ;
+                pblk->wReg[103] = tick - pblk->uLTick ;
+                pblk->uLTick = tick ;
+            }
         }
         pblk->nMBInterval = 0;
     }

@@ -2,7 +2,7 @@
 .\objects\mbsvr_comm.o: ..\User\Mbsvr_comm.h
 .\objects\mbsvr_comm.o: ..\Libraries\CMSIS\stm32f10x.h
 .\objects\mbsvr_comm.o: ..\Libraries\CMSIS\core_cm3.h
-.\objects\mbsvr_comm.o: D:\ExtProgram\keil\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\mbsvr_comm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\mbsvr_comm.o: ..\Libraries\CMSIS\system_stm32f10x.h
 .\objects\mbsvr_comm.o: ..\User\stm32f10x_conf.h
 .\objects\mbsvr_comm.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h
@@ -30,3 +30,4 @@
 .\objects\mbsvr_comm.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h
 .\objects\mbsvr_comm.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
 .\objects\mbsvr_comm.o: ..\User\..\bsp\bsp_innerflash.h
+.\objects\mbsvr_comm.o: ..\User\..\bsp\SysTick.h

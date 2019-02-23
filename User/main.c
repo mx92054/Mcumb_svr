@@ -18,8 +18,8 @@ int main(void)
 	Modbu_COM2_init();
 
 	SetTimer(1, 200);
-	SetTimer(2, 500);
-	SetTimer(3, 1000);
+	SetTimer(2, 1000);
+	SetTimer(3, 1000); 
 	SetTimer(4, 100);
 
 	IWDG_Configuration();

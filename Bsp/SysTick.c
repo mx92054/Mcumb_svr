@@ -19,11 +19,11 @@ __IO u32 nlTicks = 0;			 //当前流逝时间的计数器
 void SysTick_Init(void)
 {
 	int i;
-	/* SystemFrequency / 10000    1ms中断一次
+	/* SystemFrequency / 1000    1ms中断一次
 	 * SystemFrequency / 100000	 10us中断一次
 	 * SystemFrequency / 1000000 1us中断一次
 	 */
-	if (SysTick_Config(SystemCoreClock / 10000)) // ST3.5.0库版本
+	if (SysTick_Config(SystemCoreClock / 1000)) // ST3.5.0库版本
 	{
 		while (1)
 			;

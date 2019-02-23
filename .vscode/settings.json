@@ -1,0 +1,10 @@
+{
+    "astyle.cmd_options": [
+                 "--style=allman",
+                 "--indent-switches",
+                 "--indent-preprocessor",
+                 "--break-blocks",
+                 "--delete-empty-lines",
+                 "--pad-oper"
+             ]
+}

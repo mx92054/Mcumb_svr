@@ -30,6 +30,7 @@ typedef struct tag_ModbusModule
     u8 errno;             //当前错误代号
     __IO u16 nMBInterval; //接受字符间隙计数器
     u8 bSaved;
+    u32 uLTick ;        //上一次接收成功的tick值 
 } Modbus_block;
 
 void ModbusSvr_block_init(Modbus_block *pblk); //初始化

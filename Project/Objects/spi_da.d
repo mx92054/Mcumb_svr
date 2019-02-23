@@ -2,7 +2,7 @@
 .\objects\spi_da.o: ..\Bsp\spi_da.h
 .\objects\spi_da.o: ..\Libraries\CMSIS\stm32f10x.h
 .\objects\spi_da.o: ..\Libraries\CMSIS\core_cm3.h
-.\objects\spi_da.o: D:\ExtProgram\keil\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\spi_da.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\spi_da.o: ..\Libraries\CMSIS\system_stm32f10x.h
 .\objects\spi_da.o: ..\User\stm32f10x_conf.h
 .\objects\spi_da.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h
