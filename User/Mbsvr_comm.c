@@ -2,6 +2,25 @@
 #include "..\bsp\bsp_innerflash.h"
 
 /*********************************************************
+ *	@brief	中断初始化
+ *	@param	None
+ *	@retval	None
+ * ******************************************************/
+void ModbusSvr_NVIC_Configuration(u8 nChn)
+{
+	NVIC_InitTypeDef NVIC_InitStructure;
+
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+	NVIC_InitStructure.NVIC_IRQChannel = nChn; //COM1_IRQ;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+}
+
+
+
+/*********************************************************
  * @desc:  modbus data initial
  * @param: pblk-指向数据块的指针
  * @retval:None
@@ -46,7 +65,7 @@ void ModbusSvr_block_init(Modbus_block *pblk)
     pblk->pos_msg = 0;
     pblk->bFrameStart = 0;
     pblk->nMBInterval = 0;
-    pblk->bSaved = 0;
+    pblk->bSaved = 1;
 
     pblk->tsk_buf = pblk->buffer;
     pblk->isr_buf = pblk->buffer + 256;
@@ -325,16 +344,27 @@ void ModbusSvr_save_para(Modbus_block *pblk)
  *         pUSARTx-通信端口
  * @retval:None
  * ******************************************************/
-void ModbusSvr_isr(Modbus_block *pblk, u8 ch)
+void ModbusSvr_isr(Modbus_block *pblk, USART_TypeDef *pUSARTx)
 {
-    if (pblk->bFrameStart)
-    {
-        if (ch != pblk->station && pblk->pos_msg == 0)
-            pblk->bFrameStart = 0;
+    u8 ch;
 
-        pblk->isr_buf[pblk->pos_msg++] = ch;
+    if (USART_GetITStatus(pUSARTx, USART_IT_RXNE) != RESET) //判断读寄存器是否非空
+    {
+        ch = USART_ReceiveData(pUSARTx); //将读寄存器的数据缓存到接收缓冲区里
+        if (pblk->bFrameStart)
+        {
+            if (ch != pblk->station && pblk->pos_msg == 0)
+                pblk->bFrameStart = 0;
+
+            pblk->isr_buf[pblk->pos_msg++] = ch;
+        }
+        pblk->nMBInterval = 0;
     }
-    pblk->nMBInterval = 0;
+
+    if (USART_GetITStatus(pUSARTx, USART_IT_TXE) != RESET)
+    {
+        USART_ITConfig(pUSARTx, USART_IT_TXE, DISABLE);
+    }
 }
 
 //-------------------------------------------------------------------------------

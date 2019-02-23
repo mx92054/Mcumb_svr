@@ -5,9 +5,9 @@
 
 /* 定义LED连接的GPIO端口, 用户只需要修改下面的代码即可改变控制的LED引脚 */
 // R-红色
-#define LED1_GPIO_PORT GPIOA			   /* GPIO端口 */
-#define LED1_GPIO_CLK RCC_APB2Periph_GPIOA /* GPIO端口时钟 */
-#define LED1_GPIO_PIN GPIO_Pin_1		   /* 连接到SCL时钟线的GPIO */
+#define LED1_GPIO_PORT GPIOB			   /* GPIO端口 */
+#define LED1_GPIO_CLK RCC_APB2Periph_GPIOB /* GPIO端口时钟 */
+#define LED1_GPIO_PIN GPIO_Pin_5		   /* 连接到SCL时钟线的GPIO */
 
 #define DO_GPIO_PORT GPIOB
 #define DO_GPIO_CLK RCC_APB2Periph_GPIOB
@@ -49,8 +49,7 @@
 #define LED1_ON digitalHi(LED1_GPIO_PORT, LED1_GPIO_PIN)
 
 void LED_GPIO_Config(void);
-void OutputDigital(void);
-void InputDigital(void);
+
 
 void BKP_Init(void);
 

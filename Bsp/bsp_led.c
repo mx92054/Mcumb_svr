@@ -16,8 +16,6 @@
   */
 void LED_GPIO_Config(void)
 {
-	int n;
-
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	RCC_APB2PeriphClockCmd(LED1_GPIO_CLK | DO_GPIO_CLK | DI_GPIO_CLK, ENABLE);
@@ -35,30 +33,6 @@ void LED_GPIO_Config(void)
 
 }
 
-/**
-  * @brief  输出寄存器值到外部
-  * @param  None
-  * @retval None
-  */
-void OutputDigital(void)
-{
-	;
-}
-
-/**
-  * @brief  采集外部开关量信号，存入wReg寄存器中
-  * @param  None
-  * @retval None
-  */
-void InputDigital(void)
-{
-	int n,t;
-
-	for (n = 0; n < 5; n++)
-	{
-		t = GPIO_ReadInputDataBit(DI_GPIO_PORT, GPIO_Pin_11 << n);
-	}
-}
 
 //----------------------------------------------------------------------------------
 void BKP_Init(void)

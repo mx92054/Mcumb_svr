@@ -13,7 +13,8 @@ int main(void)
 	SysTick_Init();
 
 	LED_GPIO_Config();
-	Modbus_init();
+	Modbu_COM1_init();
+	Modbu_COM2_init();
 
 	SetTimer(1, 200);
 	SetTimer(2, 500);
@@ -24,7 +25,8 @@ int main(void)
 	LED1_OFF;
 	while (1)
 	{
-		Modbus_task();
+		Modbus_COM1_task();
+		Modbus_COM2_task();
 
 		//------------------------------------------------------------------
 		if (GetTimer(2))

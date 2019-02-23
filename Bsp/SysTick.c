@@ -51,7 +51,8 @@ void SysTick_Handler(void)
 {
 	int i;
 
-	ModbusTimer();
+	ModbusTimer_COM1();
+	ModbusTimer_COM2();
 	nlTicks++;
 
 	if (!TimingDelay)
