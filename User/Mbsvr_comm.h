@@ -12,7 +12,7 @@
 
 typedef struct tag_ModbusModule
 {
-    short baudrate;
+    int baudrate;
     short station;
 
     short wReg[REG_LEN];   //保持存储器

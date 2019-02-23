@@ -49,13 +49,11 @@ static void port_config_COM1(u32 baud)
 void Modbu_COM1_init(void)
 {
 	char msg[100];
-	int baud;
 
 	ModbusSvr_block_init(&mblock1);
-	baud = mblock1.baudrate * 100;
-	port_config_COM1(baud);
+	port_config_COM1(mblock1.baudrate);
 
-	sprintf(msg, "\r\nStation No: %d, Baudrate: %d", mblock1.station, baud);
+	sprintf(msg, "\r\nStation No: %d, Baudrate: %d", mblock1.station, mblock1.baudrate);
 	Usart_SendString(COM1, msg);
 }
 
@@ -133,13 +131,11 @@ static void port_config_COM2(u32 baud)
 void Modbu_COM2_init(void)
 {
 	char msg[100];
-	int baud;
 
 	ModbusSvr_block_init(&mblock2);
-	baud = mblock1.baudrate * 100;
-	port_config_COM2(baud);
+	port_config_COM2(mblock2.baudrate);
 
-	sprintf(msg, "\r\nStation No: %d, Baudrate: %d", mblock2.station, baud);
+	sprintf(msg, "\r\nStation No: %d, Baudrate: %d", mblock2.station, mblock2.baudrate);
 	Usart_SendString(COM2, msg);
 }
 

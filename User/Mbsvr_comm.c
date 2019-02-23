@@ -40,7 +40,7 @@ void ModbusSvr_block_init(Modbus_block *pblk)
     pblk->wReg[102]++; //启动次数
 
     pblk->station = pblk->wReg[100];
-    pblk->baudrate = pblk->wReg[101];
+    pblk->baudrate = pblk->wReg[101]*100;
 
     switch (pblk->baudrate)
     {
@@ -336,7 +336,7 @@ void ModbusSvr_save_para(Modbus_block *pblk)
             pblk->wReg[101] = 1152;
 
         pblk->station = pblk->wReg[100];
-        pblk->baudrate = pblk->wReg[101];
+        pblk->baudrate = pblk->wReg[101]*100;
 
         InternalFlashWrite(pblk->wReg + 100, 100);
         pblk->bSaved = 0;
