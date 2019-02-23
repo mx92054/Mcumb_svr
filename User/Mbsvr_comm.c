@@ -40,7 +40,7 @@ void ModbusSvr_block_init(Modbus_block *pblk)
     pblk->wReg[102]++; //启动次数
 
     pblk->station = pblk->wReg[100];
-    pblk->baudrate = pblk->wReg[101]*100;
+    pblk->baudrate = pblk->wReg[101] * 100;
 
     switch (pblk->baudrate)
     {
@@ -132,7 +132,7 @@ static void ModbusSvr_error_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx)
 void ModbusSvr_task(Modbus_block *pblk, USART_TypeDef *pUSARTx)
 {
     u8 *ptr;
-    u32 tick ;
+    u32 tick;
 
     if (pblk->nMBInterval > pblk->uFrameInterval) //通信帧间隔时间已到，缓冲区域切换
     {
@@ -145,15 +145,15 @@ void ModbusSvr_task(Modbus_block *pblk, USART_TypeDef *pUSARTx)
 
         if (pblk->frame_len >= 8 && pblk->tsk_buf[0] == pblk->station)
         {
-            pblk->errno = ModbusSvr_procotol_chain(pblk); //handle protocol 
+            tick = GetCurTick();
+            pblk->errno = ModbusSvr_procotol_chain(pblk); //handle protocol
             if (pblk->errno)                              //occur error
                 ModbusSvr_error_respose(pblk, pUSARTx);
             else //occur finish
             {
                 ModbusSvr_normal_respose(pblk, pUSARTx);
-                tick = GetCurTick() ;
-                pblk->wReg[103] = tick - pblk->uLTick ;
-                pblk->uLTick = tick ;
+                pblk->wReg[103] = tick - pblk->uLTick;
+                pblk->uLTick = tick;
             }
         }
         pblk->nMBInterval = 0;
@@ -313,7 +313,7 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
         return 0;
     }
 
-    return 1;  //ILLEGAL_FUNCTION
+    return 1; //ILLEGAL_FUNCTION
 }
 /*********************************************************
  * @desc:  参数寄存器内容保存
@@ -336,7 +336,7 @@ void ModbusSvr_save_para(Modbus_block *pblk)
             pblk->wReg[101] = 1152;
 
         pblk->station = pblk->wReg[100];
-        pblk->baudrate = pblk->wReg[101]*100;
+        pblk->baudrate = pblk->wReg[101] * 100;
 
         InternalFlashWrite(pblk->wReg + 100, 100);
         pblk->bSaved = 0;

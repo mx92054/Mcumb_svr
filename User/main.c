@@ -3,9 +3,7 @@
 
 #include "..\bsp\bsp_led.h"
 #include "..\bsp\SysTick.h"
-#include "..\bsp\bsp_exti.h"
 #include "..\bsp\bsp_innerflash.h"
-#include "..\bsp\spi_da.h"
 #include "modbus_svr.h"
 
 //--------------------------------------------------------------------------------
