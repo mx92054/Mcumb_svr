@@ -44,7 +44,7 @@ int main(void)
 				memcpy(mblock1.wReg, mblock2.wReg, 200);
 				
 			ModbusSvr_save_para(&mblock1);
-			ModbusSvr_save_para(&mblock1);
+			ModbusSvr_save_para(&mblock2);
 		}
 	}
 }
