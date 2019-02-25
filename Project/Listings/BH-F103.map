@@ -131,6 +131,7 @@ Section Cross References
     mbsvr_comm.o(i.ModbusSvr_NVIC_Configuration) refers to misc.o(i.NVIC_PriorityGroupConfig) for NVIC_PriorityGroupConfig
     mbsvr_comm.o(i.ModbusSvr_NVIC_Configuration) refers to misc.o(i.NVIC_Init) for NVIC_Init
     mbsvr_comm.o(i.ModbusSvr_block_init) refers to bsp_innerflash.o(i.InternalFlashRead) for InternalFlashRead
+    mbsvr_comm.o(i.ModbusSvr_block_init) refers to malloc.o(i.malloc) for malloc
     mbsvr_comm.o(i.ModbusSvr_error_respose) refers to mbsvr_comm.o(i.CRC16) for CRC16
     mbsvr_comm.o(i.ModbusSvr_error_respose) refers to stm32f10x_usart.o(i.USART_SendData) for USART_SendData
     mbsvr_comm.o(i.ModbusSvr_error_respose) refers to stm32f10x_usart.o(i.USART_GetFlagStatus) for USART_GetFlagStatus
@@ -421,6 +422,38 @@ Section Cross References
     printfa.o(i._printf_pre_padding) refers (Special) to iusefp.o(.text) for __I$use$fp
     printfa.o(i._snputc) refers (Special) to iusefp.o(.text) for __I$use$fp
     printfa.o(i._sputc) refers (Special) to iusefp.o(.text) for __I$use$fp
+    malloc.o(i.free) refers to mvars.o(.data) for __microlib_freelist
+    malloc.o(i.malloc) refers to mvars.o(.data) for __microlib_freelist_initialised
+    malloc.o(i.malloc) refers to mvars.o(.data) for __microlib_freelist
+    malloc.o(i.malloc) refers to startup_stm32f10x_hd.o(HEAP) for __heap_base
+    mallocr.o(i.__free$realloc) refers to mvars.o(.data) for __microlib_freelist
+    mallocr.o(i.__malloc$realloc) refers to mallocr.o(i.internal_alloc) for internal_alloc
+    mallocr.o(i.__malloc$realloc) refers to mvars.o(.data) for __microlib_freelist_initialised
+    mallocr.o(i.__malloc$realloc) refers to startup_stm32f10x_hd.o(HEAP) for __heap_base
+    mallocr.o(i.__malloc$realloc) refers to mvars.o(.data) for __microlib_freelist
+    mallocr.o(i.internal_alloc) refers to memcpya.o(.text) for __aeabi_memcpy
+    mallocr.o(i.internal_alloc) refers to mvars.o(.data) for __microlib_freelist
+    mallocr.o(i.realloc) refers to mallocr.o(i.__free$realloc) for __free$realloc
+    mallocr.o(i.realloc) refers to mallocr.o(i.internal_alloc) for internal_alloc
+    mallocr.o(i.realloc) refers to mallocr.o(i.__malloc$realloc) for __malloc$realloc
+    mallocr.o(i.realloc) refers to mvars.o(.data) for __microlib_freelist
+    malloca.o(i.__aligned_malloc) refers to mvars.o(.data) for __microlib_freelist_initialised
+    malloca.o(i.__aligned_malloc) refers to mvars.o(.data) for __microlib_freelist
+    malloca.o(i.__aligned_malloc) refers to startup_stm32f10x_hd.o(HEAP) for __heap_base
+    malloca.o(i.__free$memalign) refers to mvars.o(.data) for __microlib_freelist
+    malloca.o(i.__malloc$memalign) refers to malloca.o(i.__aligned_malloc) for __aligned_malloc
+    mallocra.o(i.__aligned_malloc$realloc) refers to mallocra.o(i.internal_alloc) for internal_alloc
+    mallocra.o(i.__aligned_malloc$realloc) refers to mvars.o(.data) for __microlib_freelist_initialised
+    mallocra.o(i.__aligned_malloc$realloc) refers to startup_stm32f10x_hd.o(HEAP) for __heap_base
+    mallocra.o(i.__aligned_malloc$realloc) refers to mvars.o(.data) for __microlib_freelist
+    mallocra.o(i.__free$realloc$memalign) refers to mvars.o(.data) for __microlib_freelist
+    mallocra.o(i.__malloc$realloc$memalign) refers to mallocra.o(i.__aligned_malloc$realloc) for __aligned_malloc$realloc
+    mallocra.o(i.__realloc$memalign) refers to mallocra.o(i.__free$realloc$memalign) for __free$realloc$memalign
+    mallocra.o(i.__realloc$memalign) refers to mallocra.o(i.internal_alloc) for internal_alloc
+    mallocra.o(i.__realloc$memalign) refers to mallocra.o(i.__malloc$realloc$memalign) for __malloc$realloc$memalign
+    mallocra.o(i.__realloc$memalign) refers to mvars.o(.data) for __microlib_freelist
+    mallocra.o(i.internal_alloc) refers to memcpya.o(.text) for __aeabi_memcpy
+    mallocra.o(i.internal_alloc) refers to mvars.o(.data) for __microlib_freelist
     entry2.o(.ARM.Collect$$$$00000001) refers to entry2.o(.ARM.Collect$$$$00002712) for __lit__00000000
     entry2.o(.ARM.Collect$$$$00002712) refers to startup_stm32f10x_hd.o(STACK) for __initial_sp
     entry2.o(__vectab_stack_and_reset_area) refers to startup_stm32f10x_hd.o(STACK) for __initial_sp
@@ -448,7 +481,6 @@ Section Cross References
 
 Removing Unused input sections from the image.
 
-    Removing startup_stm32f10x_hd.o(HEAP), (512 bytes).
     Removing core_cm3.o(.emb_text), (32 bytes).
     Removing system_stm32f10x.o(i.SystemCoreClockUpdate), (164 bytes).
     Removing misc.o(i.NVIC_SetVectorTable), (20 bytes).
@@ -907,7 +939,7 @@ Removing Unused input sections from the image.
     Removing cdrcmple.o(.text), (48 bytes).
     Removing depilogue.o(.text), (186 bytes).
 
-458 unused section(s) (total 19388 bytes) removed from the image.
+457 unused section(s) (total 18876 bytes) removed from the image.
 
 ==============================================================================
 
@@ -919,41 +951,46 @@ Image Symbol Table
 
     ../clib/microlib/division.c              0x00000000   Number         0  uldiv.o ABSOLUTE
     ../clib/microlib/division.c              0x00000000   Number         0  uidiv.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
-    ../clib/microlib/longlong.c              0x00000000   Number         0  llsshr.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llushr.o ABSOLUTE
+    ../clib/microlib/longlong.c              0x00000000   Number         0  llsshr.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llshl.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfb.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf0.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf1.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf2.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf3.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf7.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf4.o ABSOLUTE
+    ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  malloc.o ABSOLUTE
+    ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  mallocr.o ABSOLUTE
+    ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  malloca.o ABSOLUTE
+    ../clib/microlib/malloc/malloc.c         0x00000000   Number         0  mallocra.o ABSOLUTE
+    ../clib/microlib/malloc/mvars.c          0x00000000   Number         0  mvars.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf5.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf6.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfa.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf7.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf8.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfa.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf2.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf1.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf0.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfb.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf3.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf4.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf6.o ABSOLUTE
     ../clib/microlib/printf/stubs.s          0x00000000   Number         0  stubs.o ABSOLUTE
     ../clib/microlib/stdio/fputc.c           0x00000000   Number         0  fputc.o ABSOLUTE
     ../clib/microlib/stdio/semi.s            0x00000000   Number         0  semi.o ABSOLUTE
     ../clib/microlib/stdio/streams.c         0x00000000   Number         0  stdout.o ABSOLUTE
-    ../clib/microlib/string/memcpy.c         0x00000000   Number         0  memcpyb.o ABSOLUTE
     ../clib/microlib/string/memcpy.c         0x00000000   Number         0  memcpya.o ABSOLUTE
-    ../clib/microlib/stubs.s                 0x00000000   Number         0  iusefp.o ABSOLUTE
+    ../clib/microlib/string/memcpy.c         0x00000000   Number         0  memcpyb.o ABSOLUTE
     ../clib/microlib/stubs.s                 0x00000000   Number         0  iusesemip.o ABSOLUTE
+    ../clib/microlib/stubs.s                 0x00000000   Number         0  iusefp.o ABSOLUTE
     ../fplib/microlib/fpadd.c                0x00000000   Number         0  dadd.o ABSOLUTE
     ../fplib/microlib/fpdiv.c                0x00000000   Number         0  ddiv.o ABSOLUTE
     ../fplib/microlib/fpepilogue.c           0x00000000   Number         0  depilogue.o ABSOLUTE
@@ -1039,73 +1076,77 @@ Image Symbol Table
     i.LED_GPIO_Config                        0x0800062c   Section        0  bsp_led.o(i.LED_GPIO_Config)
     i.MemManage_Handler                      0x0800066c   Section        0  stm32f10x_it.o(i.MemManage_Handler)
     i.Modbu_COM1_init                        0x08000670   Section        0  modbus_svr.o(i.Modbu_COM1_init)
-    i.Modbu_COM2_init                        0x080006c8   Section        0  modbus_svr.o(i.Modbu_COM2_init)
-    i.ModbusSvr_NVIC_Configuration           0x08000720   Section        0  mbsvr_comm.o(i.ModbusSvr_NVIC_Configuration)
-    i.ModbusSvr_block_init                   0x08000748   Section        0  mbsvr_comm.o(i.ModbusSvr_block_init)
-    i.ModbusSvr_error_respose                0x0800080c   Section        0  mbsvr_comm.o(i.ModbusSvr_error_respose)
-    ModbusSvr_error_respose                  0x0800080d   Thumb Code    94  mbsvr_comm.o(i.ModbusSvr_error_respose)
-    i.ModbusSvr_isr                          0x0800086a   Section        0  mbsvr_comm.o(i.ModbusSvr_isr)
-    i.ModbusSvr_normal_respose               0x080008ce   Section        0  mbsvr_comm.o(i.ModbusSvr_normal_respose)
-    ModbusSvr_normal_respose                 0x080008cf   Thumb Code    92  mbsvr_comm.o(i.ModbusSvr_normal_respose)
-    i.ModbusSvr_procotol_chain               0x0800092a   Section        0  mbsvr_comm.o(i.ModbusSvr_procotol_chain)
-    i.ModbusSvr_save_para                    0x08000bd6   Section        0  mbsvr_comm.o(i.ModbusSvr_save_para)
-    i.ModbusSvr_task                         0x08000c32   Section        0  mbsvr_comm.o(i.ModbusSvr_task)
-    i.ModbusTimer_COM1                       0x08000cb8   Section        0  modbus_svr.o(i.ModbusTimer_COM1)
-    i.ModbusTimer_COM2                       0x08000ccc   Section        0  modbus_svr.o(i.ModbusTimer_COM2)
-    i.Modbus_COM1_task                       0x08000ce0   Section        0  modbus_svr.o(i.Modbus_COM1_task)
-    i.Modbus_COM2_task                       0x08000cf4   Section        0  modbus_svr.o(i.Modbus_COM2_task)
-    i.NMI_Handler                            0x08000d08   Section        0  stm32f10x_it.o(i.NMI_Handler)
-    i.NVIC_Init                              0x08000d0c   Section        0  misc.o(i.NVIC_Init)
-    i.NVIC_PriorityGroupConfig               0x08000d7c   Section        0  misc.o(i.NVIC_PriorityGroupConfig)
-    i.PendSV_Handler                         0x08000d90   Section        0  stm32f10x_it.o(i.PendSV_Handler)
-    i.RCC_APB1PeriphClockCmd                 0x08000d94   Section        0  stm32f10x_rcc.o(i.RCC_APB1PeriphClockCmd)
-    i.RCC_APB2PeriphClockCmd                 0x08000db4   Section        0  stm32f10x_rcc.o(i.RCC_APB2PeriphClockCmd)
-    i.RCC_GetClocksFreq                      0x08000dd4   Section        0  stm32f10x_rcc.o(i.RCC_GetClocksFreq)
-    i.SVC_Handler                            0x08000ea8   Section        0  stm32f10x_it.o(i.SVC_Handler)
-    i.SetSysClock                            0x08000eaa   Section        0  system_stm32f10x.o(i.SetSysClock)
-    SetSysClock                              0x08000eab   Thumb Code     8  system_stm32f10x.o(i.SetSysClock)
-    i.SetSysClockTo72                        0x08000eb4   Section        0  system_stm32f10x.o(i.SetSysClockTo72)
-    SetSysClockTo72                          0x08000eb5   Thumb Code   214  system_stm32f10x.o(i.SetSysClockTo72)
-    i.SetTimer                               0x08000f94   Section        0  systick.o(i.SetTimer)
-    i.SysTick_Handler                        0x08000fb0   Section        0  systick.o(i.SysTick_Handler)
-    i.SysTick_Init                           0x08001004   Section        0  systick.o(i.SysTick_Init)
-    i.SystemInit                             0x080010a4   Section        0  system_stm32f10x.o(i.SystemInit)
-    i.USART1_IRQHandler                      0x08001104   Section        0  modbus_svr.o(i.USART1_IRQHandler)
-    i.USART2_IRQHandler                      0x08001118   Section        0  modbus_svr.o(i.USART2_IRQHandler)
-    i.USART_Cmd                              0x0800112c   Section        0  stm32f10x_usart.o(i.USART_Cmd)
-    i.USART_GetFlagStatus                    0x08001144   Section        0  stm32f10x_usart.o(i.USART_GetFlagStatus)
-    i.USART_GetITStatus                      0x0800115e   Section        0  stm32f10x_usart.o(i.USART_GetITStatus)
-    i.USART_ITConfig                         0x080011b2   Section        0  stm32f10x_usart.o(i.USART_ITConfig)
-    i.USART_Init                             0x080011fc   Section        0  stm32f10x_usart.o(i.USART_Init)
-    i.USART_ReceiveData                      0x080012d4   Section        0  stm32f10x_usart.o(i.USART_ReceiveData)
-    i.USART_SendData                         0x080012de   Section        0  stm32f10x_usart.o(i.USART_SendData)
-    i.UsageFault_Handler                     0x080012e6   Section        0  stm32f10x_it.o(i.UsageFault_Handler)
-    i.Usart_SendByte                         0x080012ea   Section        0  mbsvr_comm.o(i.Usart_SendByte)
-    i.Usart_SendString                       0x08001308   Section        0  mbsvr_comm.o(i.Usart_SendString)
-    i.__0sprintf$1                           0x08001334   Section        0  printf1.o(i.__0sprintf$1)
-    i.__scatterload_copy                     0x0800135c   Section       14  handlers.o(i.__scatterload_copy)
-    i.__scatterload_null                     0x0800136a   Section        2  handlers.o(i.__scatterload_null)
-    i.__scatterload_zeroinit                 0x0800136c   Section       14  handlers.o(i.__scatterload_zeroinit)
-    i._printf_core                           0x0800137c   Section        0  printf1.o(i._printf_core)
-    _printf_core                             0x0800137d   Thumb Code   336  printf1.o(i._printf_core)
-    i._sputc                                 0x080014d0   Section        0  printf1.o(i._sputc)
-    _sputc                                   0x080014d1   Thumb Code    10  printf1.o(i._sputc)
-    i.main                                   0x080014dc   Section        0  main.o(i.main)
-    i.port_config_COM1                       0x08001590   Section        0  modbus_svr.o(i.port_config_COM1)
-    port_config_COM1                         0x08001591   Thumb Code   136  modbus_svr.o(i.port_config_COM1)
-    i.port_config_COM2                       0x08001620   Section        0  modbus_svr.o(i.port_config_COM2)
-    port_config_COM2                         0x08001621   Thumb Code   132  modbus_svr.o(i.port_config_COM2)
-    .constdata                               0x080016ac   Section      512  mbsvr_comm.o(.constdata)
-    wCRCTable                                0x080016ac   Data         512  mbsvr_comm.o(.constdata)
+    i.Modbu_COM2_init                        0x08000700   Section        0  modbus_svr.o(i.Modbu_COM2_init)
+    i.ModbusSvr_NVIC_Configuration           0x08000790   Section        0  mbsvr_comm.o(i.ModbusSvr_NVIC_Configuration)
+    i.ModbusSvr_block_init                   0x080007b8   Section        0  mbsvr_comm.o(i.ModbusSvr_block_init)
+    i.ModbusSvr_error_respose                0x08000978   Section        0  mbsvr_comm.o(i.ModbusSvr_error_respose)
+    ModbusSvr_error_respose                  0x08000979   Thumb Code    94  mbsvr_comm.o(i.ModbusSvr_error_respose)
+    i.ModbusSvr_isr                          0x080009d6   Section        0  mbsvr_comm.o(i.ModbusSvr_isr)
+    i.ModbusSvr_normal_respose               0x08000a3a   Section        0  mbsvr_comm.o(i.ModbusSvr_normal_respose)
+    ModbusSvr_normal_respose                 0x08000a3b   Thumb Code    92  mbsvr_comm.o(i.ModbusSvr_normal_respose)
+    i.ModbusSvr_procotol_chain               0x08000a96   Section        0  mbsvr_comm.o(i.ModbusSvr_procotol_chain)
+    i.ModbusSvr_save_para                    0x08000db8   Section        0  mbsvr_comm.o(i.ModbusSvr_save_para)
+    i.ModbusSvr_task                         0x08000e64   Section        0  mbsvr_comm.o(i.ModbusSvr_task)
+    i.ModbusTimer_COM1                       0x08000ef0   Section        0  modbus_svr.o(i.ModbusTimer_COM1)
+    i.ModbusTimer_COM2                       0x08000f04   Section        0  modbus_svr.o(i.ModbusTimer_COM2)
+    i.Modbus_COM1_task                       0x08000f18   Section        0  modbus_svr.o(i.Modbus_COM1_task)
+    i.Modbus_COM2_task                       0x08000f2c   Section        0  modbus_svr.o(i.Modbus_COM2_task)
+    i.NMI_Handler                            0x08000f40   Section        0  stm32f10x_it.o(i.NMI_Handler)
+    i.NVIC_Init                              0x08000f44   Section        0  misc.o(i.NVIC_Init)
+    i.NVIC_PriorityGroupConfig               0x08000fb4   Section        0  misc.o(i.NVIC_PriorityGroupConfig)
+    i.PendSV_Handler                         0x08000fc8   Section        0  stm32f10x_it.o(i.PendSV_Handler)
+    i.RCC_APB1PeriphClockCmd                 0x08000fcc   Section        0  stm32f10x_rcc.o(i.RCC_APB1PeriphClockCmd)
+    i.RCC_APB2PeriphClockCmd                 0x08000fec   Section        0  stm32f10x_rcc.o(i.RCC_APB2PeriphClockCmd)
+    i.RCC_GetClocksFreq                      0x0800100c   Section        0  stm32f10x_rcc.o(i.RCC_GetClocksFreq)
+    i.SVC_Handler                            0x080010e0   Section        0  stm32f10x_it.o(i.SVC_Handler)
+    i.SetSysClock                            0x080010e2   Section        0  system_stm32f10x.o(i.SetSysClock)
+    SetSysClock                              0x080010e3   Thumb Code     8  system_stm32f10x.o(i.SetSysClock)
+    i.SetSysClockTo72                        0x080010ec   Section        0  system_stm32f10x.o(i.SetSysClockTo72)
+    SetSysClockTo72                          0x080010ed   Thumb Code   214  system_stm32f10x.o(i.SetSysClockTo72)
+    i.SetTimer                               0x080011cc   Section        0  systick.o(i.SetTimer)
+    i.SysTick_Handler                        0x080011e8   Section        0  systick.o(i.SysTick_Handler)
+    i.SysTick_Init                           0x0800123c   Section        0  systick.o(i.SysTick_Init)
+    i.SystemInit                             0x080012dc   Section        0  system_stm32f10x.o(i.SystemInit)
+    i.USART1_IRQHandler                      0x0800133c   Section        0  modbus_svr.o(i.USART1_IRQHandler)
+    i.USART2_IRQHandler                      0x08001350   Section        0  modbus_svr.o(i.USART2_IRQHandler)
+    i.USART_Cmd                              0x08001364   Section        0  stm32f10x_usart.o(i.USART_Cmd)
+    i.USART_GetFlagStatus                    0x0800137c   Section        0  stm32f10x_usart.o(i.USART_GetFlagStatus)
+    i.USART_GetITStatus                      0x08001396   Section        0  stm32f10x_usart.o(i.USART_GetITStatus)
+    i.USART_ITConfig                         0x080013ea   Section        0  stm32f10x_usart.o(i.USART_ITConfig)
+    i.USART_Init                             0x08001434   Section        0  stm32f10x_usart.o(i.USART_Init)
+    i.USART_ReceiveData                      0x0800150c   Section        0  stm32f10x_usart.o(i.USART_ReceiveData)
+    i.USART_SendData                         0x08001516   Section        0  stm32f10x_usart.o(i.USART_SendData)
+    i.UsageFault_Handler                     0x0800151e   Section        0  stm32f10x_it.o(i.UsageFault_Handler)
+    i.Usart_SendByte                         0x08001522   Section        0  mbsvr_comm.o(i.Usart_SendByte)
+    i.Usart_SendString                       0x08001540   Section        0  mbsvr_comm.o(i.Usart_SendString)
+    i.__0sprintf$1                           0x0800156c   Section        0  printf1.o(i.__0sprintf$1)
+    i.__scatterload_copy                     0x08001594   Section       14  handlers.o(i.__scatterload_copy)
+    i.__scatterload_null                     0x080015a2   Section        2  handlers.o(i.__scatterload_null)
+    i.__scatterload_zeroinit                 0x080015a4   Section       14  handlers.o(i.__scatterload_zeroinit)
+    i._printf_core                           0x080015b4   Section        0  printf1.o(i._printf_core)
+    _printf_core                             0x080015b5   Thumb Code   336  printf1.o(i._printf_core)
+    i._sputc                                 0x08001708   Section        0  printf1.o(i._sputc)
+    _sputc                                   0x08001709   Thumb Code    10  printf1.o(i._sputc)
+    i.main                                   0x08001714   Section        0  main.o(i.main)
+    i.malloc                                 0x080017c8   Section        0  malloc.o(i.malloc)
+    i.port_config_COM1                       0x08001834   Section        0  modbus_svr.o(i.port_config_COM1)
+    port_config_COM1                         0x08001835   Thumb Code   136  modbus_svr.o(i.port_config_COM1)
+    i.port_config_COM2                       0x080018c4   Section        0  modbus_svr.o(i.port_config_COM2)
+    port_config_COM2                         0x080018c5   Thumb Code   132  modbus_svr.o(i.port_config_COM2)
+    .constdata                               0x08001950   Section      512  mbsvr_comm.o(.constdata)
+    wCRCTable                                0x08001950   Data         512  mbsvr_comm.o(.constdata)
     .data                                    0x20000000   Section       20  system_stm32f10x.o(.data)
     .data                                    0x20000014   Section       20  stm32f10x_rcc.o(.data)
     APBAHBPrescTable                         0x20000014   Data          16  stm32f10x_rcc.o(.data)
     ADCPrescTable                            0x20000024   Data           4  stm32f10x_rcc.o(.data)
     .data                                    0x20000028   Section        8  systick.o(.data)
     TimingDelay                              0x20000028   Data           4  systick.o(.data)
-    .bss                                     0x20000030   Section     2688  modbus_svr.o(.bss)
-    .bss                                     0x20000ab0   Section       50  systick.o(.bss)
-    STACK                                    0x20000ae8   Section     1024  startup_stm32f10x_hd.o(STACK)
+    .data                                    0x20000030   Section        4  mvars.o(.data)
+    .data                                    0x20000034   Section        4  mvars.o(.data)
+    .bss                                     0x20000038   Section     2752  modbus_svr.o(.bss)
+    .bss                                     0x20000af8   Section       50  systick.o(.bss)
+    HEAP                                     0x20000b30   Section      512  startup_stm32f10x_hd.o(HEAP)
+    STACK                                    0x20000d30   Section     1024  startup_stm32f10x_hd.o(STACK)
 
     Global Symbols
 
@@ -1263,60 +1304,65 @@ Image Symbol Table
     InternalFlashWrite                       0x080005dd   Thumb Code    74  bsp_innerflash.o(i.InternalFlashWrite)
     LED_GPIO_Config                          0x0800062d   Thumb Code    54  bsp_led.o(i.LED_GPIO_Config)
     MemManage_Handler                        0x0800066d   Thumb Code     4  stm32f10x_it.o(i.MemManage_Handler)
-    Modbu_COM1_init                          0x08000671   Thumb Code    46  modbus_svr.o(i.Modbu_COM1_init)
-    Modbu_COM2_init                          0x080006c9   Thumb Code    46  modbus_svr.o(i.Modbu_COM2_init)
-    ModbusSvr_NVIC_Configuration             0x08000721   Thumb Code    40  mbsvr_comm.o(i.ModbusSvr_NVIC_Configuration)
-    ModbusSvr_block_init                     0x08000749   Thumb Code   196  mbsvr_comm.o(i.ModbusSvr_block_init)
-    ModbusSvr_isr                            0x0800086b   Thumb Code   100  mbsvr_comm.o(i.ModbusSvr_isr)
-    ModbusSvr_procotol_chain                 0x0800092b   Thumb Code   684  mbsvr_comm.o(i.ModbusSvr_procotol_chain)
-    ModbusSvr_save_para                      0x08000bd7   Thumb Code    92  mbsvr_comm.o(i.ModbusSvr_save_para)
-    ModbusSvr_task                           0x08000c33   Thumb Code   134  mbsvr_comm.o(i.ModbusSvr_task)
-    ModbusTimer_COM1                         0x08000cb9   Thumb Code    16  modbus_svr.o(i.ModbusTimer_COM1)
-    ModbusTimer_COM2                         0x08000ccd   Thumb Code    16  modbus_svr.o(i.ModbusTimer_COM2)
-    Modbus_COM1_task                         0x08000ce1   Thumb Code    12  modbus_svr.o(i.Modbus_COM1_task)
-    Modbus_COM2_task                         0x08000cf5   Thumb Code    12  modbus_svr.o(i.Modbus_COM2_task)
-    NMI_Handler                              0x08000d09   Thumb Code     2  stm32f10x_it.o(i.NMI_Handler)
-    NVIC_Init                                0x08000d0d   Thumb Code   100  misc.o(i.NVIC_Init)
-    NVIC_PriorityGroupConfig                 0x08000d7d   Thumb Code    10  misc.o(i.NVIC_PriorityGroupConfig)
-    PendSV_Handler                           0x08000d91   Thumb Code     2  stm32f10x_it.o(i.PendSV_Handler)
-    RCC_APB1PeriphClockCmd                   0x08000d95   Thumb Code    26  stm32f10x_rcc.o(i.RCC_APB1PeriphClockCmd)
-    RCC_APB2PeriphClockCmd                   0x08000db5   Thumb Code    26  stm32f10x_rcc.o(i.RCC_APB2PeriphClockCmd)
-    RCC_GetClocksFreq                        0x08000dd5   Thumb Code   192  stm32f10x_rcc.o(i.RCC_GetClocksFreq)
-    SVC_Handler                              0x08000ea9   Thumb Code     2  stm32f10x_it.o(i.SVC_Handler)
-    SetTimer                                 0x08000f95   Thumb Code    20  systick.o(i.SetTimer)
-    SysTick_Handler                          0x08000fb1   Thumb Code    72  systick.o(i.SysTick_Handler)
-    SysTick_Init                             0x08001005   Thumb Code   136  systick.o(i.SysTick_Init)
-    SystemInit                               0x080010a5   Thumb Code    78  system_stm32f10x.o(i.SystemInit)
-    USART1_IRQHandler                        0x08001105   Thumb Code    12  modbus_svr.o(i.USART1_IRQHandler)
-    USART2_IRQHandler                        0x08001119   Thumb Code    12  modbus_svr.o(i.USART2_IRQHandler)
-    USART_Cmd                                0x0800112d   Thumb Code    24  stm32f10x_usart.o(i.USART_Cmd)
-    USART_GetFlagStatus                      0x08001145   Thumb Code    26  stm32f10x_usart.o(i.USART_GetFlagStatus)
-    USART_GetITStatus                        0x0800115f   Thumb Code    84  stm32f10x_usart.o(i.USART_GetITStatus)
-    USART_ITConfig                           0x080011b3   Thumb Code    74  stm32f10x_usart.o(i.USART_ITConfig)
-    USART_Init                               0x080011fd   Thumb Code   210  stm32f10x_usart.o(i.USART_Init)
-    USART_ReceiveData                        0x080012d5   Thumb Code    10  stm32f10x_usart.o(i.USART_ReceiveData)
-    USART_SendData                           0x080012df   Thumb Code     8  stm32f10x_usart.o(i.USART_SendData)
-    UsageFault_Handler                       0x080012e7   Thumb Code     4  stm32f10x_it.o(i.UsageFault_Handler)
-    Usart_SendByte                           0x080012eb   Thumb Code    30  mbsvr_comm.o(i.Usart_SendByte)
-    Usart_SendString                         0x08001309   Thumb Code    42  mbsvr_comm.o(i.Usart_SendString)
-    __0sprintf$1                             0x08001335   Thumb Code    34  printf1.o(i.__0sprintf$1)
-    __1sprintf$1                             0x08001335   Thumb Code     0  printf1.o(i.__0sprintf$1)
-    __2sprintf                               0x08001335   Thumb Code     0  printf1.o(i.__0sprintf$1)
-    __scatterload_copy                       0x0800135d   Thumb Code    14  handlers.o(i.__scatterload_copy)
-    __scatterload_null                       0x0800136b   Thumb Code     2  handlers.o(i.__scatterload_null)
-    __scatterload_zeroinit                   0x0800136d   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
-    main                                     0x080014dd   Thumb Code   166  main.o(i.main)
-    Region$$Table$$Base                      0x080018ac   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x080018cc   Number         0  anon$$obj.o(Region$$Table)
+    Modbu_COM1_init                          0x08000671   Thumb Code    72  modbus_svr.o(i.Modbu_COM1_init)
+    Modbu_COM2_init                          0x08000701   Thumb Code    72  modbus_svr.o(i.Modbu_COM2_init)
+    ModbusSvr_NVIC_Configuration             0x08000791   Thumb Code    40  mbsvr_comm.o(i.ModbusSvr_NVIC_Configuration)
+    ModbusSvr_block_init                     0x080007b9   Thumb Code   448  mbsvr_comm.o(i.ModbusSvr_block_init)
+    ModbusSvr_isr                            0x080009d7   Thumb Code   100  mbsvr_comm.o(i.ModbusSvr_isr)
+    ModbusSvr_procotol_chain                 0x08000a97   Thumb Code   802  mbsvr_comm.o(i.ModbusSvr_procotol_chain)
+    ModbusSvr_save_para                      0x08000db9   Thumb Code   172  mbsvr_comm.o(i.ModbusSvr_save_para)
+    ModbusSvr_task                           0x08000e65   Thumb Code   138  mbsvr_comm.o(i.ModbusSvr_task)
+    ModbusTimer_COM1                         0x08000ef1   Thumb Code    16  modbus_svr.o(i.ModbusTimer_COM1)
+    ModbusTimer_COM2                         0x08000f05   Thumb Code    16  modbus_svr.o(i.ModbusTimer_COM2)
+    Modbus_COM1_task                         0x08000f19   Thumb Code    12  modbus_svr.o(i.Modbus_COM1_task)
+    Modbus_COM2_task                         0x08000f2d   Thumb Code    12  modbus_svr.o(i.Modbus_COM2_task)
+    NMI_Handler                              0x08000f41   Thumb Code     2  stm32f10x_it.o(i.NMI_Handler)
+    NVIC_Init                                0x08000f45   Thumb Code   100  misc.o(i.NVIC_Init)
+    NVIC_PriorityGroupConfig                 0x08000fb5   Thumb Code    10  misc.o(i.NVIC_PriorityGroupConfig)
+    PendSV_Handler                           0x08000fc9   Thumb Code     2  stm32f10x_it.o(i.PendSV_Handler)
+    RCC_APB1PeriphClockCmd                   0x08000fcd   Thumb Code    26  stm32f10x_rcc.o(i.RCC_APB1PeriphClockCmd)
+    RCC_APB2PeriphClockCmd                   0x08000fed   Thumb Code    26  stm32f10x_rcc.o(i.RCC_APB2PeriphClockCmd)
+    RCC_GetClocksFreq                        0x0800100d   Thumb Code   192  stm32f10x_rcc.o(i.RCC_GetClocksFreq)
+    SVC_Handler                              0x080010e1   Thumb Code     2  stm32f10x_it.o(i.SVC_Handler)
+    SetTimer                                 0x080011cd   Thumb Code    20  systick.o(i.SetTimer)
+    SysTick_Handler                          0x080011e9   Thumb Code    72  systick.o(i.SysTick_Handler)
+    SysTick_Init                             0x0800123d   Thumb Code   136  systick.o(i.SysTick_Init)
+    SystemInit                               0x080012dd   Thumb Code    78  system_stm32f10x.o(i.SystemInit)
+    USART1_IRQHandler                        0x0800133d   Thumb Code    12  modbus_svr.o(i.USART1_IRQHandler)
+    USART2_IRQHandler                        0x08001351   Thumb Code    12  modbus_svr.o(i.USART2_IRQHandler)
+    USART_Cmd                                0x08001365   Thumb Code    24  stm32f10x_usart.o(i.USART_Cmd)
+    USART_GetFlagStatus                      0x0800137d   Thumb Code    26  stm32f10x_usart.o(i.USART_GetFlagStatus)
+    USART_GetITStatus                        0x08001397   Thumb Code    84  stm32f10x_usart.o(i.USART_GetITStatus)
+    USART_ITConfig                           0x080013eb   Thumb Code    74  stm32f10x_usart.o(i.USART_ITConfig)
+    USART_Init                               0x08001435   Thumb Code   210  stm32f10x_usart.o(i.USART_Init)
+    USART_ReceiveData                        0x0800150d   Thumb Code    10  stm32f10x_usart.o(i.USART_ReceiveData)
+    USART_SendData                           0x08001517   Thumb Code     8  stm32f10x_usart.o(i.USART_SendData)
+    UsageFault_Handler                       0x0800151f   Thumb Code     4  stm32f10x_it.o(i.UsageFault_Handler)
+    Usart_SendByte                           0x08001523   Thumb Code    30  mbsvr_comm.o(i.Usart_SendByte)
+    Usart_SendString                         0x08001541   Thumb Code    42  mbsvr_comm.o(i.Usart_SendString)
+    __0sprintf$1                             0x0800156d   Thumb Code    34  printf1.o(i.__0sprintf$1)
+    __1sprintf$1                             0x0800156d   Thumb Code     0  printf1.o(i.__0sprintf$1)
+    __2sprintf                               0x0800156d   Thumb Code     0  printf1.o(i.__0sprintf$1)
+    __scatterload_copy                       0x08001595   Thumb Code    14  handlers.o(i.__scatterload_copy)
+    __scatterload_null                       0x080015a3   Thumb Code     2  handlers.o(i.__scatterload_null)
+    __scatterload_zeroinit                   0x080015a5   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
+    main                                     0x08001715   Thumb Code   166  main.o(i.main)
+    malloc                                   0x080017c9   Thumb Code    92  malloc.o(i.malloc)
+    Region$$Table$$Base                      0x08001b50   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08001b70   Number         0  anon$$obj.o(Region$$Table)
     SystemCoreClock                          0x20000000   Data           4  system_stm32f10x.o(.data)
     AHBPrescTable                            0x20000004   Data          16  system_stm32f10x.o(.data)
     nlTicks                                  0x2000002c   Data           4  systick.o(.data)
-    mblock1                                  0x20000030   Data        1344  modbus_svr.o(.bss)
-    mblock2                                  0x20000570   Data        1344  modbus_svr.o(.bss)
-    TimePre                                  0x20000ab0   Data          20  systick.o(.bss)
-    TimeCur                                  0x20000ac4   Data          20  systick.o(.bss)
-    TimerFlag                                0x20000ad8   Data          10  systick.o(.bss)
-    __initial_sp                             0x20000ee8   Data           0  startup_stm32f10x_hd.o(STACK)
+    __microlib_freelist                      0x20000030   Data           4  mvars.o(.data)
+    __microlib_freelist_initialised          0x20000034   Data           4  mvars.o(.data)
+    mblock1                                  0x20000038   Data        1376  modbus_svr.o(.bss)
+    mblock2                                  0x20000598   Data        1376  modbus_svr.o(.bss)
+    TimePre                                  0x20000af8   Data          20  systick.o(.bss)
+    TimeCur                                  0x20000b0c   Data          20  systick.o(.bss)
+    TimerFlag                                0x20000b20   Data          10  systick.o(.bss)
+    __heap_base                              0x20000b30   Data           0  startup_stm32f10x_hd.o(HEAP)
+    __heap_limit                             0x20000d30   Data           0  startup_stm32f10x_hd.o(HEAP)
+    __initial_sp                             0x20001130   Data           0  startup_stm32f10x_hd.o(STACK)
 
 
 
@@ -1326,26 +1372,26 @@ Memory Map of the image
 
   Image Entry point : 0x08000131
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x000018fc, Max: 0x00080000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00001ba8, Max: 0x00080000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x000018cc, Max: 0x00080000, ABSOLUTE)
+    Execution Region ER_IROM1 (Base: 0x08000000, Size: 0x00001b70, Max: 0x00080000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x08000000   0x00000130   Data   RO            3    RESET               startup_stm32f10x_hd.o
     0x08000130   0x00000000   Code   RO         3460  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
-    0x08000130   0x00000004   Code   RO         3728    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
-    0x08000134   0x00000004   Code   RO         3731    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
-    0x08000138   0x00000000   Code   RO         3733    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
-    0x08000138   0x00000000   Code   RO         3735    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
-    0x08000138   0x00000008   Code   RO         3736    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
-    0x08000140   0x00000000   Code   RO         3738    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
-    0x08000140   0x00000000   Code   RO         3740    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
-    0x08000140   0x00000004   Code   RO         3729    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
+    0x08000130   0x00000004   Code   RO         3756    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
+    0x08000134   0x00000004   Code   RO         3759    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
+    0x08000138   0x00000000   Code   RO         3761    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
+    0x08000138   0x00000000   Code   RO         3763    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
+    0x08000138   0x00000008   Code   RO         3764    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
+    0x08000140   0x00000000   Code   RO         3766    .ARM.Collect$$$$0000000D  mc_w.l(entry10a.o)
+    0x08000140   0x00000000   Code   RO         3768    .ARM.Collect$$$$0000000F  mc_w.l(entry11a.o)
+    0x08000140   0x00000004   Code   RO         3757    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
     0x08000144   0x00000024   Code   RO            4    .text               startup_stm32f10x_hd.o
     0x08000168   0x00000024   Code   RO         3463    .text               mc_w.l(memcpya.o)
-    0x0800018c   0x0000002c   Code   RO         3745    .text               mc_w.l(uidiv.o)
-    0x080001b8   0x00000024   Code   RO         3760    .text               mc_w.l(init.o)
+    0x0800018c   0x0000002c   Code   RO         3773    .text               mc_w.l(uidiv.o)
+    0x080001b8   0x00000024   Code   RO         3790    .text               mc_w.l(init.o)
     0x080001dc   0x00000004   Code   RO         3139    i.BusFault_Handler  stm32f10x_it.o
     0x080001e0   0x00000030   Code   RO         3270    i.CRC16             mbsvr_comm.o
     0x08000210   0x00000002   Code   RO         3140    i.DebugMon_Handler  stm32f10x_it.o
@@ -1374,76 +1420,81 @@ Memory Map of the image
     0x080005dc   0x00000050   Code   RO         3440    i.InternalFlashWrite  bsp_innerflash.o
     0x0800062c   0x00000040   Code   RO         3351    i.LED_GPIO_Config   bsp_led.o
     0x0800066c   0x00000004   Code   RO         3142    i.MemManage_Handler  stm32f10x_it.o
-    0x08000670   0x00000058   Code   RO         3196    i.Modbu_COM1_init   modbus_svr.o
-    0x080006c8   0x00000058   Code   RO         3197    i.Modbu_COM2_init   modbus_svr.o
-    0x08000720   0x00000028   Code   RO         3271    i.ModbusSvr_NVIC_Configuration  mbsvr_comm.o
-    0x08000748   0x000000c4   Code   RO         3272    i.ModbusSvr_block_init  mbsvr_comm.o
-    0x0800080c   0x0000005e   Code   RO         3273    i.ModbusSvr_error_respose  mbsvr_comm.o
-    0x0800086a   0x00000064   Code   RO         3274    i.ModbusSvr_isr     mbsvr_comm.o
-    0x080008ce   0x0000005c   Code   RO         3275    i.ModbusSvr_normal_respose  mbsvr_comm.o
-    0x0800092a   0x000002ac   Code   RO         3276    i.ModbusSvr_procotol_chain  mbsvr_comm.o
-    0x08000bd6   0x0000005c   Code   RO         3277    i.ModbusSvr_save_para  mbsvr_comm.o
-    0x08000c32   0x00000086   Code   RO         3278    i.ModbusSvr_task    mbsvr_comm.o
-    0x08000cb8   0x00000014   Code   RO         3198    i.ModbusTimer_COM1  modbus_svr.o
-    0x08000ccc   0x00000014   Code   RO         3199    i.ModbusTimer_COM2  modbus_svr.o
-    0x08000ce0   0x00000014   Code   RO         3200    i.Modbus_COM1_task  modbus_svr.o
-    0x08000cf4   0x00000014   Code   RO         3201    i.Modbus_COM2_task  modbus_svr.o
-    0x08000d08   0x00000002   Code   RO         3143    i.NMI_Handler       stm32f10x_it.o
-    0x08000d0a   0x00000002   PAD
-    0x08000d0c   0x00000070   Code   RO          137    i.NVIC_Init         misc.o
-    0x08000d7c   0x00000014   Code   RO          138    i.NVIC_PriorityGroupConfig  misc.o
-    0x08000d90   0x00000002   Code   RO         3144    i.PendSV_Handler    stm32f10x_it.o
-    0x08000d92   0x00000002   PAD
-    0x08000d94   0x00000020   Code   RO         1708    i.RCC_APB1PeriphClockCmd  stm32f10x_rcc.o
-    0x08000db4   0x00000020   Code   RO         1710    i.RCC_APB2PeriphClockCmd  stm32f10x_rcc.o
-    0x08000dd4   0x000000d4   Code   RO         1718    i.RCC_GetClocksFreq  stm32f10x_rcc.o
-    0x08000ea8   0x00000002   Code   RO         3145    i.SVC_Handler       stm32f10x_it.o
-    0x08000eaa   0x00000008   Code   RO           24    i.SetSysClock       system_stm32f10x.o
-    0x08000eb2   0x00000002   PAD
-    0x08000eb4   0x000000e0   Code   RO           25    i.SetSysClockTo72   system_stm32f10x.o
-    0x08000f94   0x0000001c   Code   RO         3384    i.SetTimer          systick.o
-    0x08000fb0   0x00000054   Code   RO         3385    i.SysTick_Handler   systick.o
-    0x08001004   0x000000a0   Code   RO         3386    i.SysTick_Init      systick.o
-    0x080010a4   0x00000060   Code   RO           27    i.SystemInit        system_stm32f10x.o
-    0x08001104   0x00000014   Code   RO         3202    i.USART1_IRQHandler  modbus_svr.o
-    0x08001118   0x00000014   Code   RO         3203    i.USART2_IRQHandler  modbus_svr.o
-    0x0800112c   0x00000018   Code   RO         2878    i.USART_Cmd         stm32f10x_usart.o
-    0x08001144   0x0000001a   Code   RO         2881    i.USART_GetFlagStatus  stm32f10x_usart.o
-    0x0800115e   0x00000054   Code   RO         2882    i.USART_GetITStatus  stm32f10x_usart.o
-    0x080011b2   0x0000004a   Code   RO         2884    i.USART_ITConfig    stm32f10x_usart.o
-    0x080011fc   0x000000d8   Code   RO         2885    i.USART_Init        stm32f10x_usart.o
-    0x080012d4   0x0000000a   Code   RO         2892    i.USART_ReceiveData  stm32f10x_usart.o
-    0x080012de   0x00000008   Code   RO         2895    i.USART_SendData    stm32f10x_usart.o
-    0x080012e6   0x00000004   Code   RO         3146    i.UsageFault_Handler  stm32f10x_it.o
-    0x080012ea   0x0000001e   Code   RO         3279    i.Usart_SendByte    mbsvr_comm.o
-    0x08001308   0x0000002a   Code   RO         3281    i.Usart_SendString  mbsvr_comm.o
-    0x08001332   0x00000002   PAD
-    0x08001334   0x00000028   Code   RO         3514    i.__0sprintf$1      mc_w.l(printf1.o)
-    0x0800135c   0x0000000e   Code   RO         3774    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x0800136a   0x00000002   Code   RO         3775    i.__scatterload_null  mc_w.l(handlers.o)
-    0x0800136c   0x0000000e   Code   RO         3776    i.__scatterload_zeroinit  mc_w.l(handlers.o)
-    0x0800137a   0x00000002   PAD
-    0x0800137c   0x00000154   Code   RO         3519    i._printf_core      mc_w.l(printf1.o)
-    0x080014d0   0x0000000a   Code   RO         3521    i._sputc            mc_w.l(printf1.o)
-    0x080014da   0x00000002   PAD
-    0x080014dc   0x000000b4   Code   RO         3108    i.main              main.o
-    0x08001590   0x00000090   Code   RO         3204    i.port_config_COM1  modbus_svr.o
-    0x08001620   0x0000008c   Code   RO         3205    i.port_config_COM2  modbus_svr.o
-    0x080016ac   0x00000200   Data   RO         3282    .constdata          mbsvr_comm.o
-    0x080018ac   0x00000020   Data   RO         3772    Region$$Table       anon$$obj.o
+    0x08000670   0x00000090   Code   RO         3196    i.Modbu_COM1_init   modbus_svr.o
+    0x08000700   0x00000090   Code   RO         3197    i.Modbu_COM2_init   modbus_svr.o
+    0x08000790   0x00000028   Code   RO         3271    i.ModbusSvr_NVIC_Configuration  mbsvr_comm.o
+    0x080007b8   0x000001c0   Code   RO         3272    i.ModbusSvr_block_init  mbsvr_comm.o
+    0x08000978   0x0000005e   Code   RO         3273    i.ModbusSvr_error_respose  mbsvr_comm.o
+    0x080009d6   0x00000064   Code   RO         3274    i.ModbusSvr_isr     mbsvr_comm.o
+    0x08000a3a   0x0000005c   Code   RO         3275    i.ModbusSvr_normal_respose  mbsvr_comm.o
+    0x08000a96   0x00000322   Code   RO         3276    i.ModbusSvr_procotol_chain  mbsvr_comm.o
+    0x08000db8   0x000000ac   Code   RO         3277    i.ModbusSvr_save_para  mbsvr_comm.o
+    0x08000e64   0x0000008a   Code   RO         3278    i.ModbusSvr_task    mbsvr_comm.o
+    0x08000eee   0x00000002   PAD
+    0x08000ef0   0x00000014   Code   RO         3198    i.ModbusTimer_COM1  modbus_svr.o
+    0x08000f04   0x00000014   Code   RO         3199    i.ModbusTimer_COM2  modbus_svr.o
+    0x08000f18   0x00000014   Code   RO         3200    i.Modbus_COM1_task  modbus_svr.o
+    0x08000f2c   0x00000014   Code   RO         3201    i.Modbus_COM2_task  modbus_svr.o
+    0x08000f40   0x00000002   Code   RO         3143    i.NMI_Handler       stm32f10x_it.o
+    0x08000f42   0x00000002   PAD
+    0x08000f44   0x00000070   Code   RO          137    i.NVIC_Init         misc.o
+    0x08000fb4   0x00000014   Code   RO          138    i.NVIC_PriorityGroupConfig  misc.o
+    0x08000fc8   0x00000002   Code   RO         3144    i.PendSV_Handler    stm32f10x_it.o
+    0x08000fca   0x00000002   PAD
+    0x08000fcc   0x00000020   Code   RO         1708    i.RCC_APB1PeriphClockCmd  stm32f10x_rcc.o
+    0x08000fec   0x00000020   Code   RO         1710    i.RCC_APB2PeriphClockCmd  stm32f10x_rcc.o
+    0x0800100c   0x000000d4   Code   RO         1718    i.RCC_GetClocksFreq  stm32f10x_rcc.o
+    0x080010e0   0x00000002   Code   RO         3145    i.SVC_Handler       stm32f10x_it.o
+    0x080010e2   0x00000008   Code   RO           24    i.SetSysClock       system_stm32f10x.o
+    0x080010ea   0x00000002   PAD
+    0x080010ec   0x000000e0   Code   RO           25    i.SetSysClockTo72   system_stm32f10x.o
+    0x080011cc   0x0000001c   Code   RO         3384    i.SetTimer          systick.o
+    0x080011e8   0x00000054   Code   RO         3385    i.SysTick_Handler   systick.o
+    0x0800123c   0x000000a0   Code   RO         3386    i.SysTick_Init      systick.o
+    0x080012dc   0x00000060   Code   RO           27    i.SystemInit        system_stm32f10x.o
+    0x0800133c   0x00000014   Code   RO         3202    i.USART1_IRQHandler  modbus_svr.o
+    0x08001350   0x00000014   Code   RO         3203    i.USART2_IRQHandler  modbus_svr.o
+    0x08001364   0x00000018   Code   RO         2878    i.USART_Cmd         stm32f10x_usart.o
+    0x0800137c   0x0000001a   Code   RO         2881    i.USART_GetFlagStatus  stm32f10x_usart.o
+    0x08001396   0x00000054   Code   RO         2882    i.USART_GetITStatus  stm32f10x_usart.o
+    0x080013ea   0x0000004a   Code   RO         2884    i.USART_ITConfig    stm32f10x_usart.o
+    0x08001434   0x000000d8   Code   RO         2885    i.USART_Init        stm32f10x_usart.o
+    0x0800150c   0x0000000a   Code   RO         2892    i.USART_ReceiveData  stm32f10x_usart.o
+    0x08001516   0x00000008   Code   RO         2895    i.USART_SendData    stm32f10x_usart.o
+    0x0800151e   0x00000004   Code   RO         3146    i.UsageFault_Handler  stm32f10x_it.o
+    0x08001522   0x0000001e   Code   RO         3279    i.Usart_SendByte    mbsvr_comm.o
+    0x08001540   0x0000002a   Code   RO         3281    i.Usart_SendString  mbsvr_comm.o
+    0x0800156a   0x00000002   PAD
+    0x0800156c   0x00000028   Code   RO         3514    i.__0sprintf$1      mc_w.l(printf1.o)
+    0x08001594   0x0000000e   Code   RO         3804    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x080015a2   0x00000002   Code   RO         3805    i.__scatterload_null  mc_w.l(handlers.o)
+    0x080015a4   0x0000000e   Code   RO         3806    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x080015b2   0x00000002   PAD
+    0x080015b4   0x00000154   Code   RO         3519    i._printf_core      mc_w.l(printf1.o)
+    0x08001708   0x0000000a   Code   RO         3521    i._sputc            mc_w.l(printf1.o)
+    0x08001712   0x00000002   PAD
+    0x08001714   0x000000b4   Code   RO         3108    i.main              main.o
+    0x080017c8   0x0000006c   Code   RO         3729    i.malloc            mc_w.l(malloc.o)
+    0x08001834   0x00000090   Code   RO         3204    i.port_config_COM1  modbus_svr.o
+    0x080018c4   0x0000008c   Code   RO         3205    i.port_config_COM2  modbus_svr.o
+    0x08001950   0x00000200   Data   RO         3282    .constdata          mbsvr_comm.o
+    0x08001b50   0x00000020   Data   RO         3802    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x00000ee8, Max: 0x00010000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Base: 0x20000000, Size: 0x00001130, Max: 0x00010000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x20000000   0x00000014   Data   RW           28    .data               system_stm32f10x.o
     0x20000014   0x00000014   Data   RW         1738    .data               stm32f10x_rcc.o
     0x20000028   0x00000008   Data   RW         3388    .data               systick.o
-    0x20000030   0x00000a80   Zero   RW         3206    .bss                modbus_svr.o
-    0x20000ab0   0x00000032   Zero   RW         3387    .bss                systick.o
-    0x20000ae2   0x00000006   PAD
-    0x20000ae8   0x00000400   Zero   RW            1    STACK               startup_stm32f10x_hd.o
+    0x20000030   0x00000004   Data   RW         3777    .data               mc_w.l(mvars.o)
+    0x20000034   0x00000004   Data   RW         3778    .data               mc_w.l(mvars.o)
+    0x20000038   0x00000ac0   Zero   RW         3206    .bss                modbus_svr.o
+    0x20000af8   0x00000032   Zero   RW         3387    .bss                systick.o
+    0x20000b2a   0x00000006   PAD
+    0x20000b30   0x00000200   Zero   RW            2    HEAP                startup_stm32f10x_hd.o
+    0x20000d30   0x00000400   Zero   RW            1    STACK               startup_stm32f10x_hd.o
 
 
 ==============================================================================
@@ -1456,11 +1507,11 @@ Image component sizes
        116         10          0          0          0       1257   bsp_innerflash.o
        114         16          0          0          0       1263   bsp_led.o
          0          0          0          0          0       4508   core_cm3.o
-       180         14          0          0          0       1375   main.o
-      1552          6        512          0          0       7960   mbsvr_comm.o
+       180         14          0          0          0       1527   main.o
+      2006          6        512          0          0       8276   mbsvr_comm.o
        132         22          0          0          0       1571   misc.o
-       580        140          0          0       2688       4850   modbus_svr.o
-        36          8        304          0       1024        832   startup_stm32f10x_hd.o
+       692        200          0          0       2752       4866   modbus_svr.o
+        36          8        304          0       1536        832   startup_stm32f10x_hd.o
        330         38          0          0          0       5432   stm32f10x_flash.o
        422          6          0          0          0       2834   stm32f10x_gpio.o
         24          0          0          0          0       3140   stm32f10x_it.o
@@ -1471,9 +1522,9 @@ Image component sizes
        328         58          0          8         50      18250   systick.o
 
     ----------------------------------------------------------------------
-      4940        414        848         48       3768     302918   Object Totals
+      5508        474        848         48       4344     303402   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-        12          0          0          0          6          0   (incl. Padding)
+        14          0          0          0          6          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -1489,22 +1540,24 @@ Image component sizes
          8          4          0          0          0          0   entry9a.o
         30          0          0          0          0          0   handlers.o
         36          8          0          0          0         68   init.o
+       108         16          0          0          0         84   malloc.o
         36          0          0          0          0         68   memcpya.o
+         0          0          0          8          0          0   mvars.o
        390         10          0          0          0        252   printf1.o
         44          0          0          0          0         80   uidiv.o
 
     ----------------------------------------------------------------------
-       560         26          0          0          0        468   Library Totals
+       668         42          0          8          0        552   Library Totals
          4          0          0          0          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Library Name
 
-       556         26          0          0          0        468   mc_w.l
+       664         42          0          8          0        552   mc_w.l
 
     ----------------------------------------------------------------------
-       560         26          0          0          0        468   Library Totals
+       668         42          0          8          0        552   Library Totals
 
     ----------------------------------------------------------------------
 
@@ -1513,15 +1566,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      5500        440        848         48       3768     300002   Grand Totals
-      5500        440        848         48       3768     300002   ELF Image Totals
-      5500        440        848         48          0          0   ROM Totals
+      6176        516        848         56       4344     300518   Grand Totals
+      6176        516        848         56       4344     300518   ELF Image Totals
+      6176        516        848         56          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                 6348 (   6.20kB)
-    Total RW  Size (RW Data + ZI Data)              3816 (   3.73kB)
-    Total ROM Size (Code + RO Data + RW Data)       6396 (   6.25kB)
+    Total RO  Size (Code + RO Data)                 7024 (   6.86kB)
+    Total RW  Size (RW Data + ZI Data)              4400 (   4.30kB)
+    Total ROM Size (Code + RO Data + RW Data)       7080 (   6.91kB)
 
 ==============================================================================
 

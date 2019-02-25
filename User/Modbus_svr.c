@@ -55,6 +55,8 @@ void Modbu_COM1_init(void)
 
 	sprintf(msg, "\r\nStation No: %d, Baudrate: %d", mblock1.station, mblock1.baudrate);
 	Usart_SendString(COM1, msg);
+	sprintf(msg,"\r\nReg Start adr: %d, Len: %d", mblock1.uRegStartAdr, mblock1.uRegLen) ;
+	Usart_SendString(COM1, msg) ;
 }
 
 //-------------------------------------------------------------------------------
@@ -137,6 +139,8 @@ void Modbu_COM2_init(void)
 
 	sprintf(msg, "\r\nStation No: %d, Baudrate: %d", mblock2.station, mblock2.baudrate);
 	Usart_SendString(COM2, msg);
+	sprintf(msg,"\r\nReg Start adr: %d, Len: %d", mblock2.uRegStartAdr, mblock2.uRegLen) ;
+	Usart_SendString(COM2, msg) ;
 }
 
 //-------------------------------------------------------------------------------

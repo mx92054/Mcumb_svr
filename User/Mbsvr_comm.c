@@ -1,6 +1,7 @@
 #include "Mbsvr_comm.h"
 #include "..\bsp\bsp_innerflash.h"
 #include "..\bsp\SysTick.h"
+#include <string.h>
 
 /*********************************************************
  *	@brief	中断初始化
@@ -26,21 +27,50 @@ void ModbusSvr_NVIC_Configuration(u8 nChn)
  * ******************************************************/
 void ModbusSvr_block_init(Modbus_block *pblk)
 {
-    short tmp;
-    InternalFlashRead(pblk->wReg + 100, 100);
+    int tmp;
+    unsigned short zone[100];
 
-    tmp = pblk->wReg[100]; //站地址设置检查
-    if (tmp < 0 || tmp > 255)
-        pblk->wReg[100] = 1;
+    InternalFlashRead((short *)zone, 100);
 
-    tmp = pblk->wReg[101]; //波特率设置检查
-    if (tmp != 96 && tmp != 192 && tmp != 384 && tmp != 1152)
-        pblk->wReg[101] = 1152;
+    if (zone[90] == 0 || zone[90] > 254) //站地址设置检查
+        zone[90] = 1;
 
-    pblk->wReg[102]++; //启动次数
+    if (zone[91] != 96 && zone[91] != 192 && zone[91] != 384 && zone[91] != 576 && zone[91] != 1152)
+        zone[91] = 1152; //波特率检查
 
-    pblk->station = pblk->wReg[100];
-    pblk->baudrate = pblk->wReg[101] * 100;
+    zone[92]++; //启动次数加一
+
+    zone[93] = 0 ;
+    if (zone[94] < 200) //线圈地址及长度检查
+        zone[94] = 200;
+    if (zone[94] > 2000)
+        zone[94] = 2000;
+    tmp = zone[93] + zone[94] ;
+    if ( tmp > 0xFFFF )
+        zone[93] = 0xFFFF - zone[94] ;
+
+    zone[95] = 0 ;
+    if (zone[96] < 200) //保持寄存器地址检查
+        zone[96] = 200;
+    if (zone[96] > 2000)
+        zone[96] = 2000;
+    tmp = zone[95] + zone[96] ;
+    if ( tmp > 0xFFFF )
+        zone[95] = 0xFFFF - zone[96] ;
+
+    pblk->station = zone[90];
+    pblk->baudrate = zone[91] * 100;
+
+    pblk->uCoilStartAdr = zone[93];
+    pblk->uCoilLen = zone[94];
+    pblk->uCoilEndAdr = zone[93] + zone[94];
+    pblk->ptrCoils = (short *)malloc(zone[94] * sizeof(short));
+
+    pblk->uRegStartAdr = zone[95];
+    pblk->uRegLen = zone[96];
+    pblk->uRegEndAdr = zone[95] + zone[96];
+    pblk->ptrRegs = (short *)malloc(zone[96] * sizeof(short));
+    //memcpy(pblk->ptrRegs + pblk->uRegLen - 100, zone, 200);
 
     switch (pblk->baudrate)
     {
@@ -152,7 +182,7 @@ void ModbusSvr_task(Modbus_block *pblk, USART_TypeDef *pUSARTx)
             else //occur finish
             {
                 ModbusSvr_normal_respose(pblk, pUSARTx);
-                pblk->wReg[103] = tick - pblk->uLTick;
+                pblk->ptrRegs[103] = tick - pblk->uLTick;
                 pblk->uLTick = tick;
             }
         }
@@ -196,16 +226,18 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
     {
         if (data_len > 960)
             return 3; // ILLEGAL DATA VALUE
-        if ((reg_adr + data_len) >= COIL_LEN)
+        if (reg_adr < pblk->uCoilStartAdr)
+            return 2; //ILLEGAL DATA ADDRESS
+        if ((reg_adr + data_len) >= pblk->uCoilEndAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
         ptr = &tsk_buf[2];
         *ptr++ = BIT2BYTE(data_len);
-        cur_adr = reg_adr;
+        cur_adr = reg_adr - pblk->uCoilStartAdr;
         cur_bit = 0;
         for (i = 0; i < data_len; i++)
         {
-            if (pblk->coils[cur_adr])
+            if (pblk->ptrCoils[cur_adr])
                 *ptr = SETBIT_BYTE(*ptr, cur_bit);
             else
                 *ptr = RESETBIT_BYTE(*ptr, cur_bit);
@@ -224,13 +256,13 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
     //----------Write single coil---------------------------------
     if (tsk_buf[1] == 5)
     {
-        if (reg_adr >= COIL_LEN)
+        if (reg_adr >= pblk->uCoilStartAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
         if (data_len == 0xFF00)
-            pblk->coils[reg_adr] = 1;
+            pblk->ptrCoils[reg_adr - pblk->uCoilStartAdr] = 1;
         else if (data_len == 0)
-            pblk->coils[reg_adr] = 0;
+            pblk->ptrCoils[reg_adr - pblk->uCoilStartAdr] = 0;
         else
             return 3; //ILLEGAL DATA VALUE
         pblk->trans_len = 8;
@@ -240,12 +272,14 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
     //----------Write multiple coils---------------------------------
     if (tsk_buf[1] == 15)
     {
-        if ((reg_adr + data_len) >= COIL_LEN)
+        if (reg_adr < pblk->uCoilStartAdr)
+            return 2; //ILLEGAL DATA ADDRESS
+        if ((reg_adr + data_len) >= pblk->uCoilEndAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
         cur_bit = 0;
         ptr = &tsk_buf[7];
-        ptrReg = &pblk->coils[reg_adr];
+        ptrReg = &pblk->ptrCoils[reg_adr - pblk->uCoilStartAdr];
         for (i = 0; i < data_len; i++)
         {
             *ptrReg++ = ((*ptr & (0x01 << cur_bit)) == 0) ? 0 : 1;
@@ -264,14 +298,15 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
     {
         if (data_len > 125)
             return 3; // ILLEGAL DATA VALUE
-
-        if ((reg_adr + data_len) >= REG_LEN)
+        if (reg_adr < pblk->uRegStartAdr)
+            return 2; //ILLEGAL DATA ADDRESS
+        if ((reg_adr + data_len) >= pblk->uRegEndAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
         ptr = &tsk_buf[2];
-        ptrReg = &pblk->wReg[reg_adr];
+        ptrReg = &pblk->ptrRegs[reg_adr - pblk->uRegStartAdr];
         *ptr++ = data_len << 1; //  Byte count
-        for (i = reg_adr; i < reg_adr + data_len; i++)
+        for (i = 0; i < data_len; i++)
         {
             *ptr++ = *ptrReg >> 8;
             *ptr++ = *ptrReg & 0x00FF;
@@ -284,10 +319,10 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
     //----------Write single holding register----------------------
     if (tsk_buf[1] == 6)
     {
-        if (reg_adr >= REG_LEN)
+        if (reg_adr >= pblk->uRegStartAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
-        pblk->wReg[reg_adr] = data_len;
+        pblk->ptrRegs[reg_adr - pblk->uRegStartAdr] = data_len;
         pblk->bSaved = 1;
         pblk->trans_len = 8;
         return 0;
@@ -296,13 +331,14 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
     //----------Write multiple holding register--------------------
     if (tsk_buf[1] == 16)
     {
-
-        if ((reg_adr + data_len) >= REG_LEN)
+        if (reg_adr < pblk->uRegStartAdr)
+            return 2; //ILLEGAL DATA ADDRESS
+        if ((reg_adr + data_len) >= pblk->uRegEndAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
         ptr = &tsk_buf[7];
-        ptrReg = &pblk->wReg[reg_adr];
-        for (i = reg_adr; i < reg_adr + data_len; i++)
+        ptrReg = &pblk->ptrRegs[reg_adr - pblk->uRegStartAdr];
+        for (i = 0; i < data_len; i++)
         {
             *ptrReg = ((*ptr++) << 8);
             *ptrReg |= (*ptr++);
@@ -327,18 +363,18 @@ void ModbusSvr_save_para(Modbus_block *pblk)
 
     if (pblk->bSaved)
     {
-        tmp = pblk->wReg[100]; //站地址设置检查
-        if (tmp < 0 || tmp > 255)
-            pblk->wReg[100] = 1;
+        tmp = pblk->ptrRegs[pblk->uRegLen - 10]; //站地址设置检查
+        if (tmp <= 0 || tmp > 255)
+            pblk->ptrRegs[pblk->uRegLen - 10] = 1;
 
-        tmp = pblk->wReg[101]; //波特率设置检查
-        if (tmp != 96 && tmp != 192 && tmp != 384 && tmp != 1152)
-            pblk->wReg[101] = 1152;
+        tmp = pblk->ptrRegs[pblk->uRegLen - 9]; //波特率设置检查
+        if (tmp != 96 && tmp != 192 && tmp != 384 && tmp != 576 && tmp != 1152)
+            pblk->ptrRegs[pblk->uRegLen - 9] = 1152;
 
-        pblk->station = pblk->wReg[100];
-        pblk->baudrate = pblk->wReg[101] * 100;
+        pblk->station = pblk->ptrRegs[pblk->uRegLen - 10];
+        pblk->baudrate = pblk->ptrRegs[pblk->uRegLen - 9];
 
-        InternalFlashWrite(pblk->wReg + 100, 100);
+        InternalFlashWrite(pblk->ptrRegs + pblk->uRegLen - 100, 100);
         pblk->bSaved = 0;
     }
 }

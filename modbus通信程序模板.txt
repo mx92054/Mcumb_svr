@@ -1,1 +1,13 @@
+模拟MODBUS SLAVE的控制程序
 
+其中保持寄存器地址偏移范围内最后100间的内容将保存到EPROM中，其中最后10个寄存器是特殊寄存器，不能用着别的用途。
+
+1.特殊寄存器定义如下：
+
+End Address：本站地址号 1-254
+End Address - 1： 通信波特率/100
+End Address - 2:  通信间隔周期(ms)
+End Address - 3:  数字量寄存器起始地址
+End Address - 4： 数字量寄存器长度
+End Address - 5： 保持寄存器起始地址
+End Address - 6： 保持寄存器长度
