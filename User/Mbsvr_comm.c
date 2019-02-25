@@ -2,6 +2,7 @@
 #include "..\bsp\bsp_innerflash.h"
 #include "..\bsp\SysTick.h"
 #include <string.h>
+#include <stdlib.h>
 
 /*********************************************************
  *	@brief	中断初始化
@@ -40,23 +41,21 @@ void ModbusSvr_block_init(Modbus_block *pblk)
 
     zone[92]++; //启动次数加一
 
-    zone[93] = 0 ;
     if (zone[94] < 200) //线圈地址及长度检查
         zone[94] = 200;
-    if (zone[94] > 2000)
-        zone[94] = 2000;
-    tmp = zone[93] + zone[94] ;
-    if ( tmp > 0xFFFF )
-        zone[93] = 0xFFFF - zone[94] ;
+    if (zone[94] > 1000)
+        zone[94] = 1000;
+    tmp = zone[93] + zone[94];
+    if (tmp > 0xFFFF)
+        zone[93] = 0xFFFF - zone[94];
 
-    zone[95] = 0 ;
     if (zone[96] < 200) //保持寄存器地址检查
         zone[96] = 200;
-    if (zone[96] > 2000)
-        zone[96] = 2000;
-    tmp = zone[95] + zone[96] ;
-    if ( tmp > 0xFFFF )
-        zone[95] = 0xFFFF - zone[96] ;
+    if (zone[96] > 1000)
+        zone[96] = 1000;
+    tmp = zone[95] + zone[96];
+    if (tmp > 0xFFFF)
+        zone[95] = 0xFFFF - zone[96];
 
     pblk->station = zone[90];
     pblk->baudrate = zone[91] * 100;
@@ -65,25 +64,33 @@ void ModbusSvr_block_init(Modbus_block *pblk)
     pblk->uCoilLen = zone[94];
     pblk->uCoilEndAdr = zone[93] + zone[94];
     pblk->ptrCoils = (short *)malloc(zone[94] * sizeof(short));
+    if (pblk->ptrCoils == NULL)
+        pblk->uCoilLen = 9999;
 
     pblk->uRegStartAdr = zone[95];
     pblk->uRegLen = zone[96];
     pblk->uRegEndAdr = zone[95] + zone[96];
     pblk->ptrRegs = (short *)malloc(zone[96] * sizeof(short));
-    //memcpy(pblk->ptrRegs + pblk->uRegLen - 100, zone, 200);
+     if (pblk->ptrRegs == NULL)
+        pblk->uRegLen = 9999;
+   
+    memcpy(pblk->ptrRegs + pblk->uRegLen - 100, zone, 200);
 
     switch (pblk->baudrate)
     {
-    case 96:
+    case 9600:
         pblk->uFrameInterval = 15;
         break;
-    case 192:
+    case 19200:
         pblk->uFrameInterval = 10;
         break;
-    case 384:
+    case 38400:
         pblk->uFrameInterval = 5;
         break;
-    case 1152:
+    case 57600:
+        pblk->uFrameInterval = 5;
+        break;
+    case 115200:
         pblk->uFrameInterval = 5;
         break;
     default:
@@ -182,7 +189,7 @@ void ModbusSvr_task(Modbus_block *pblk, USART_TypeDef *pUSARTx)
             else //occur finish
             {
                 ModbusSvr_normal_respose(pblk, pUSARTx);
-                pblk->ptrRegs[103] = tick - pblk->uLTick;
+                pblk->ptrRegs[pblk->uRegLen - 8] = tick - pblk->uLTick;
                 pblk->uLTick = tick;
             }
         }
@@ -359,21 +366,8 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
  * ******************************************************/
 void ModbusSvr_save_para(Modbus_block *pblk)
 {
-    short tmp;
-
     if (pblk->bSaved)
     {
-        tmp = pblk->ptrRegs[pblk->uRegLen - 10]; //站地址设置检查
-        if (tmp <= 0 || tmp > 255)
-            pblk->ptrRegs[pblk->uRegLen - 10] = 1;
-
-        tmp = pblk->ptrRegs[pblk->uRegLen - 9]; //波特率设置检查
-        if (tmp != 96 && tmp != 192 && tmp != 384 && tmp != 576 && tmp != 1152)
-            pblk->ptrRegs[pblk->uRegLen - 9] = 1152;
-
-        pblk->station = pblk->ptrRegs[pblk->uRegLen - 10];
-        pblk->baudrate = pblk->ptrRegs[pblk->uRegLen - 9];
-
         InternalFlashWrite(pblk->ptrRegs + pblk->uRegLen - 100, 100);
         pblk->bSaved = 0;
     }

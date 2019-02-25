@@ -12,6 +12,7 @@
 
 typedef struct tag_ModbusModule
 {
+    int SaveNo ;
     int baudrate;
     short station;
 
@@ -42,6 +43,8 @@ typedef struct tag_ModbusModule
     u32 uLTick; //上一次接收成功的tick值
 } Modbus_block;
 
+
+//----------------------------------------------------------------------------------
 void ModbusSvr_block_init(Modbus_block *pblk); //初始化
 void ModbusSvr_task(Modbus_block *pblk, USART_TypeDef *pUSARTx);
 u8 ModbusSvr_procotol_chain(Modbus_block *pblk);

@@ -32,3 +32,4 @@
 .\objects\mbsvr_comm.o: ..\User\..\bsp\bsp_innerflash.h
 .\objects\mbsvr_comm.o: ..\User\..\bsp\SysTick.h
 .\objects\mbsvr_comm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\mbsvr_comm.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h

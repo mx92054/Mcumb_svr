@@ -18,12 +18,12 @@ int InternalFlashWrite(short *pData, short len)
 	status = FLASH_ErasePage(WRITE_START_ADDR);
 
 	StartAddr = WRITE_START_ADDR;
-	EndAddr = StartAddr + len * 4;
+	EndAddr = StartAddr + len * 2;
 	while (StartAddr < EndAddr && status == FLASH_COMPLETE)
 	{
-		status = FLASH_ProgramWord(StartAddr, (uint32_t)(*pData));
+		status = FLASH_ProgramHalfWord(StartAddr, (*pData));
 		pData++;
-		StartAddr += 4;
+		StartAddr += 2;
 	}
 
 	FLASH_Lock();
@@ -43,11 +43,13 @@ void InternalFlashRead(short *pData, short len)
 	uint32_t EndAddr = 0;
 
 	StartAddr = WRITE_START_ADDR;
-	EndAddr = StartAddr + len * 4;
+	EndAddr = StartAddr + len * 2;
 	while (StartAddr < EndAddr)
 	{
-		*pData = (short)(*(__IO uint32_t *)StartAddr);
+		*pData = (short)(*(__IO uint16_t *)StartAddr);
 		pData++;
-		StartAddr += 4;
+		StartAddr += 2;
 	}
 }
+
+
