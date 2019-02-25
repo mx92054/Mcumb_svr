@@ -11,3 +11,5 @@ End Address - 3:  数字量寄存器起始地址
 End Address - 4： 数字量寄存器长度
 End Address - 5： 保持寄存器起始地址
 End Address - 6： 保持寄存器长度
+End Address - 7： 只读寄存器起始地址
+End Address - 8： 只读寄存器长度

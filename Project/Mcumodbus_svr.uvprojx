@@ -565,11 +565,6 @@
               <FilePath>..\Bsp\bsp_led.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_exti.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\bsp_exti.c</FilePath>
-            </File>
-            <File>
               <FileName>SysTick.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Bsp\SysTick.c</FilePath>
@@ -578,16 +573,6 @@
               <FileName>bsp_innerflash.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Bsp\bsp_innerflash.c</FilePath>
-            </File>
-            <File>
-              <FileName>adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>spi_da.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Bsp\spi_da.c</FilePath>
             </File>
           </Files>
         </Group>

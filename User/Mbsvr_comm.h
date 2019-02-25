@@ -19,14 +19,21 @@ typedef struct tag_ModbusModule
     short wReg[REG_LEN];   //保持存储器
     short coils[COIL_LEN]; //继电器存储器
 
-    int uRegStartAdr ;
-    int uRegLen;   //寄存器长度
-    int uRegEndAdr ;
-    short *ptrRegs;  //保持寄存器的地方
     int uCoilStartAdr ;
     int uCoilLen;  //线圈数目
     int uCoilEndAdr ;
-    short *ptrCoils; //保持线圈的地方
+    short *ptrCoils; //保持线圈的地方  
+    
+    int uRomStartAdr ;
+    int uRomLen;   //只读寄存器长度
+    int uRomEndAdr ;
+    short *ptrRoms;  //只读寄存器的地方
+
+    int uRegStartAdr ;
+    int uRegLen;   //保持寄存器长度
+    int uRegEndAdr ;
+    short *ptrRegs;  //保持寄存器的地方
+
 
     u8 buffer[512]; //缓冲区
     u8 *tsk_buf;    //处理程序缓冲

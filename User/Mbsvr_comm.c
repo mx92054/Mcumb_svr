@@ -43,19 +43,27 @@ void ModbusSvr_block_init(Modbus_block *pblk)
 
     if (zone[94] < 200) //线圈地址及长度检查
         zone[94] = 200;
-    if (zone[94] > 1000)
-        zone[94] = 1000;
+    if (zone[94] > 500)
+        zone[94] = 500;
     tmp = zone[93] + zone[94];
     if (tmp > 0xFFFF)
         zone[93] = 0xFFFF - zone[94];
 
     if (zone[96] < 200) //保持寄存器地址检查
         zone[96] = 200;
-    if (zone[96] > 1000)
-        zone[96] = 1000;
+    if (zone[96] > 500)
+        zone[96] = 500;
     tmp = zone[95] + zone[96];
     if (tmp > 0xFFFF)
         zone[95] = 0xFFFF - zone[96];
+
+    if (zone[98] < 200) //只读寄存器地址检查
+        zone[98] = 200;
+    if (zone[98] > 500)
+        zone[98] = 500;
+    tmp = zone[97] + zone[98];
+    if (tmp > 0xFFFF)
+        zone[97] = 0xFFFF - zone[98];
 
     pblk->station = zone[90];
     pblk->baudrate = zone[91] * 100;
@@ -71,9 +79,16 @@ void ModbusSvr_block_init(Modbus_block *pblk)
     pblk->uRegLen = zone[96];
     pblk->uRegEndAdr = zone[95] + zone[96];
     pblk->ptrRegs = (short *)malloc(zone[96] * sizeof(short));
-     if (pblk->ptrRegs == NULL)
+    if (pblk->ptrRegs == NULL)
         pblk->uRegLen = 9999;
-   
+
+    pblk->uRomStartAdr = zone[97];
+    pblk->uRomLen = zone[98];
+    pblk->uRomEndAdr = zone[97] + zone[98];
+    pblk->ptrRoms = (short *)malloc(zone[98] * sizeof(short));
+    if (pblk->ptrRoms == NULL)
+        pblk->uRomLen = 9999;
+
     memcpy(pblk->ptrRegs + pblk->uRegLen - 100, zone, 200);
 
     switch (pblk->baudrate)
@@ -300,8 +315,8 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
         return 0;
     }
 
-    //----------Read Input & Holding Register----------------------
-    if (tsk_buf[1] == 3 || tsk_buf[1] == 4)
+    //----------Read Holding Register----------------------
+    if (tsk_buf[1] == 3)
     {
         if (data_len > 125)
             return 3; // ILLEGAL DATA VALUE
@@ -312,6 +327,29 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
 
         ptr = &tsk_buf[2];
         ptrReg = &pblk->ptrRegs[reg_adr - pblk->uRegStartAdr];
+        *ptr++ = data_len << 1; //  Byte count
+        for (i = 0; i < data_len; i++)
+        {
+            *ptr++ = *ptrReg >> 8;
+            *ptr++ = *ptrReg & 0x00FF;
+            ptrReg++;
+        }
+        pblk->trans_len = 5 + tsk_buf[2];
+        return 0;
+    }
+
+    //----------Read Input Register----------------------
+    if (tsk_buf[1] == 4)
+    {
+        if (data_len > 125)
+            return 3; // ILLEGAL DATA VALUE
+        if (reg_adr < pblk->uRomStartAdr)
+            return 2; //ILLEGAL DATA ADDRESS
+        if ((reg_adr + data_len) >= pblk->uRomEndAdr)
+            return 2; //ILLEGAL DATA ADDRESS
+
+        ptr = &tsk_buf[2];
+        ptrReg = &pblk->ptrRoms[reg_adr - pblk->uRomStartAdr];
         *ptr++ = data_len << 1; //  Byte count
         for (i = 0; i < data_len; i++)
         {
