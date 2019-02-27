@@ -28,7 +28,6 @@ void ModbusSvr_NVIC_Configuration(u8 nChn)
  * ******************************************************/
 void ModbusSvr_block_init(Modbus_block *pblk)
 {
-    int tmp;
     unsigned short zone[100];
 
     InternalFlashRead((short *)zone, 100);
@@ -45,25 +44,22 @@ void ModbusSvr_block_init(Modbus_block *pblk)
         zone[94] = 200;
     if (zone[94] > 500)
         zone[94] = 500;
-    tmp = zone[93] + zone[94];
-    if (tmp > 0xFFFF)
-        zone[93] = 0xFFFF - zone[94];
+    if (zone[93] > 5000)
+        zone[93] = 0;
 
     if (zone[96] < 200) //保持寄存器地址检查
         zone[96] = 200;
     if (zone[96] > 500)
         zone[96] = 500;
-    tmp = zone[95] + zone[96];
-    if (tmp > 0xFFFF)
-        zone[95] = 0xFFFF - zone[96];
+    if (zone[95] > 5000)
+        zone[95] = 0;
 
     if (zone[98] < 200) //只读寄存器地址检查
         zone[98] = 200;
     if (zone[98] > 500)
         zone[98] = 500;
-    tmp = zone[97] + zone[98];
-    if (tmp > 0xFFFF)
-        zone[97] = 0xFFFF - zone[98];
+    if (zone[97] > 5000)
+        zone[97] = 0;
 
     pblk->station = zone[90];
     pblk->baudrate = zone[91] * 100;
@@ -131,7 +127,6 @@ void ModbusSvr_block_init(Modbus_block *pblk)
 static void ModbusSvr_normal_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx)
 {
     u16 uCrc1;
-    int i;
 
     //-----------Product CRC byte------------------------------------
     uCrc1 = CRC16(pblk->tsk_buf, pblk->trans_len - 2);
@@ -139,12 +134,7 @@ static void ModbusSvr_normal_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx)
     pblk->tsk_buf[pblk->trans_len - 1] = uCrc1 >> 8;
 
     //-------------Transmitter frame---------------------------------
-    for (i = 0; i < pblk->trans_len; i++)
-    {
-        USART_SendData(pUSARTx, pblk->tsk_buf[i]);
-        while (USART_GetFlagStatus(pUSARTx, USART_FLAG_TC) == RESET)
-            ;
-    }
+    Usart_SendBytes(pUSARTx, pblk->tsk_buf, pblk->trans_len);
 }
 
 /*********************************************************
@@ -156,7 +146,6 @@ static void ModbusSvr_normal_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx)
 static void ModbusSvr_error_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx)
 {
     u16 uCrc1;
-    int i;
 
     pblk->tsk_buf[1] |= 0x80;
     pblk->tsk_buf[2] = pblk->errno;
@@ -167,12 +156,7 @@ static void ModbusSvr_error_respose(Modbus_block *pblk, USART_TypeDef *pUSARTx)
     pblk->tsk_buf[4] = uCrc1 >> 8;
 
     //-------------Transmitter frame---------------------------------
-    for (i = 0; i < 5; i++)
-    {
-        USART_SendData(pUSARTx, pblk->tsk_buf[i]);
-        while (USART_GetFlagStatus(pUSARTx, USART_FLAG_TC) == RESET)
-            ;
-    }
+    Usart_SendBytes(pUSARTx, pblk->tsk_buf, 5);
 }
 
 /*********************************************************
@@ -204,7 +188,7 @@ void ModbusSvr_task(Modbus_block *pblk, USART_TypeDef *pUSARTx)
             else //occur finish
             {
                 ModbusSvr_normal_respose(pblk, pUSARTx);
-                pblk->ptrRegs[pblk->uRegLen - 8] = tick - pblk->uLTick;
+                pblk->ptrRegs[pblk->uRegLen - 1] = tick - pblk->uLTick;
                 pblk->uLTick = tick;
             }
         }
@@ -250,7 +234,7 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
             return 3; // ILLEGAL DATA VALUE
         if (reg_adr < pblk->uCoilStartAdr)
             return 2; //ILLEGAL DATA ADDRESS
-        if ((reg_adr + data_len) >= pblk->uCoilEndAdr)
+        if ((reg_adr + data_len) > pblk->uCoilEndAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
         ptr = &tsk_buf[2];
@@ -278,7 +262,7 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
     //----------Write single coil---------------------------------
     if (tsk_buf[1] == 5)
     {
-        if (reg_adr >= pblk->uCoilStartAdr)
+        if (reg_adr < pblk->uCoilStartAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
         if (data_len == 0xFF00)
@@ -296,7 +280,7 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
     {
         if (reg_adr < pblk->uCoilStartAdr)
             return 2; //ILLEGAL DATA ADDRESS
-        if ((reg_adr + data_len) >= pblk->uCoilEndAdr)
+        if ((reg_adr + data_len) > pblk->uCoilEndAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
         cur_bit = 0;
@@ -322,7 +306,7 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
             return 3; // ILLEGAL DATA VALUE
         if (reg_adr < pblk->uRegStartAdr)
             return 2; //ILLEGAL DATA ADDRESS
-        if ((reg_adr + data_len) >= pblk->uRegEndAdr)
+        if ((reg_adr + data_len) > pblk->uRegEndAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
         ptr = &tsk_buf[2];
@@ -345,7 +329,7 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
             return 3; // ILLEGAL DATA VALUE
         if (reg_adr < pblk->uRomStartAdr)
             return 2; //ILLEGAL DATA ADDRESS
-        if ((reg_adr + data_len) >= pblk->uRomEndAdr)
+        if ((reg_adr + data_len) > pblk->uRomEndAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
         ptr = &tsk_buf[2];
@@ -364,7 +348,7 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
     //----------Write single holding register----------------------
     if (tsk_buf[1] == 6)
     {
-        if (reg_adr >= pblk->uRegStartAdr)
+        if (reg_adr < pblk->uRegStartAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
         pblk->ptrRegs[reg_adr - pblk->uRegStartAdr] = data_len;
@@ -378,7 +362,7 @@ u8 ModbusSvr_procotol_chain(Modbus_block *pblk)
     {
         if (reg_adr < pblk->uRegStartAdr)
             return 2; //ILLEGAL DATA ADDRESS
-        if ((reg_adr + data_len) >= pblk->uRegEndAdr)
+        if ((reg_adr + data_len) > pblk->uRegEndAdr)
             return 2; //ILLEGAL DATA ADDRESS
 
         ptr = &tsk_buf[7];
@@ -506,6 +490,22 @@ void Usart_SendByte(USART_TypeDef *pUSARTx, uint8_t ch)
 
     while (USART_GetFlagStatus(pUSARTx, USART_FLAG_TXE) == RESET)
         ;
+}
+
+//-------------------------------------------------------------------------------
+//	@brief	发送一个字节
+//	@param	pUSARTx:发送端口号
+//					ch: 待发送的字节
+//	@retval	None
+//-------------------------------------------------------------------------------
+void Usart_SendBytes(USART_TypeDef *pUSARTx, uint8_t *ptr, int n)
+{
+    while (n--)
+    {
+        USART_SendData(pUSARTx, *ptr++);
+        while (USART_GetFlagStatus(pUSARTx, USART_FLAG_TXE) == RESET)
+            ;
+    }
 }
 
 //-------------------------------------------------------------------------------

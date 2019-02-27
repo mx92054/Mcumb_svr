@@ -2,10 +2,10 @@
 #include "Modbus_svr.h"
 #include "..\bsp\bsp_led.h"
 #include "Mbsvr_comm.h"
-#include "stdio.h"
+#include <stdio.h>
 
 Modbus_block mblock1;
-Modbus_block mblock2 ;
+Modbus_block mblock2;
 //-------------------------------------------------------------------------------
 //	@brief	串口初始化
 //	@param	None
@@ -55,12 +55,13 @@ void Modbu_COM1_init(void)
 
 	sprintf(msg, "\r\nStation No: %d, Baudrate: %d", mblock1.station, mblock1.baudrate);
 	Usart_SendString(COM1, msg);
-	sprintf(msg,"\r\nCoil Start adr: %4d, Len: %4d", mblock1.uCoilStartAdr, mblock1.uCoilLen) ;
-	Usart_SendString(COM1, msg) ;
-	sprintf(msg,"\r\nReg  Start adr: %4d, Len: %4d", mblock1.uRegStartAdr, mblock1.uRegLen) ;
-	Usart_SendString(COM1, msg) ;
-	sprintf(msg,"\r\nRom  Start adr: %4d, Len: %4d", mblock1.uRomStartAdr, mblock1.uRomLen) ;
-	Usart_SendString(COM1, msg) ;}
+	sprintf(msg, "\r\nCoil Start adr: %4d, Len: %4d", mblock1.uCoilStartAdr, mblock1.uCoilLen);
+	Usart_SendString(COM1, msg);
+	sprintf(msg, "\r\nReg  Start adr: %4d, Len: %4d", mblock1.uRegStartAdr, mblock1.uRegLen);
+	Usart_SendString(COM1, msg);
+	sprintf(msg, "\r\nRom  Start adr: %4d, Len: %4d", mblock1.uRomStartAdr, mblock1.uRomLen);
+	Usart_SendString(COM1, msg);
+}
 
 //-------------------------------------------------------------------------------
 //	@brief	协议任务调度
@@ -141,9 +142,13 @@ void Modbu_COM2_init(void)
 	port_config_COM2(mblock2.baudrate);
 
 	sprintf(msg, "\r\nStation No: %d, Baudrate: %d", mblock2.station, mblock2.baudrate);
-	Usart_SendString(COM2, msg);
-	sprintf(msg,"\r\nReg Start adr: %d, Len: %d", mblock2.uRegStartAdr, mblock2.uRegLen) ;
-	Usart_SendString(COM2, msg) ;
+	Usart_SendString(COM1, msg);
+	sprintf(msg, "\r\nCoil Start adr: %4d, Len: %4d", mblock2.uCoilStartAdr, mblock2.uCoilLen);
+	Usart_SendString(COM1, msg);
+	sprintf(msg, "\r\nReg  Start adr: %4d, Len: %4d", mblock2.uRegStartAdr, mblock2.uRegLen);
+	Usart_SendString(COM1, msg);
+	sprintf(msg, "\r\nRom  Start adr: %4d, Len: %4d", mblock2.uRomStartAdr, mblock2.uRomLen);
+	Usart_SendString(COM1, msg);
 }
 
 //-------------------------------------------------------------------------------
@@ -175,4 +180,3 @@ void COM2_IRQHandler(void)
 {
 	ModbusSvr_isr(&mblock2, COM2);
 }
-

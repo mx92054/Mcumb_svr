@@ -37,12 +37,11 @@ int main(void)
 		if (GetTimer(3))
 		{
 			if ( mblock1.bSaved )
-				memcpy(mblock2.wReg, mblock1.wReg, 200);
+				memcpy(mblock2.ptrRegs, mblock1.ptrRegs, 200);
 			if ( mblock2.bSaved )
-				memcpy(mblock1.wReg, mblock2.wReg, 200);
+				memcpy(mblock1.ptrRegs, mblock2.ptrRegs, 200);
 				
 			ModbusSvr_save_para(&mblock1);
-			ModbusSvr_save_para(&mblock2);
 		}
 	}
 }
