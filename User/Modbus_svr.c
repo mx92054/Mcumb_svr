@@ -142,13 +142,13 @@ void Modbu_COM2_init(void)
 	port_config_COM2(mblock2.baudrate);
 
 	sprintf(msg, "\r\nStation No: %d, Baudrate: %d", mblock2.station, mblock2.baudrate);
-	Usart_SendString(COM1, msg);
+	Usart_SendString(COM2, msg);
 	sprintf(msg, "\r\nCoil Start adr: %4d, Len: %4d", mblock2.uCoilStartAdr, mblock2.uCoilLen);
-	Usart_SendString(COM1, msg);
+	Usart_SendString(COM2, msg);
 	sprintf(msg, "\r\nReg  Start adr: %4d, Len: %4d", mblock2.uRegStartAdr, mblock2.uRegLen);
-	Usart_SendString(COM1, msg);
+	Usart_SendString(COM2, msg);
 	sprintf(msg, "\r\nRom  Start adr: %4d, Len: %4d", mblock2.uRomStartAdr, mblock2.uRomLen);
-	Usart_SendString(COM1, msg);
+	Usart_SendString(COM2, msg);
 }
 
 //-------------------------------------------------------------------------------

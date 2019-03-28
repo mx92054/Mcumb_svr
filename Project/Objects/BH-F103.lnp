@@ -29,6 +29,7 @@
 ".\objects\stm32f10x_it.o"
 ".\objects\modbus_svr.o"
 ".\objects\mbsvr_comm.o"
+".\objects\plant.o"
 ".\objects\bsp_led.o"
 ".\objects\systick.o"
 ".\objects\bsp_innerflash.o"

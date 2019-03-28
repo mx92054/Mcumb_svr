@@ -34,3 +34,4 @@
 .\objects\main.o: ..\User\..\bsp\bsp_innerflash.h
 .\objects\main.o: ..\User\modbus_svr.h
 .\objects\main.o: ..\User\Mbsvr_comm.h
+.\objects\main.o: ..\User\plant.h
