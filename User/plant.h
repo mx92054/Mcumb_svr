@@ -9,14 +9,17 @@ typedef struct _plant_block
     float dangle_pre; //上次角速度
 
     float ddangle; //角加速度
-    float ts;      //采样时间
+
+    float ts; //采样时间
+    float Jm; //转动惯量
+    float Lm; //推进力力臂长度
 } plant_block;
 
-extern plant_block plant ;
+extern plant_block plant;
 
 void plant_init(plant_block *pt);
 void plant_step(plant_block *pt, float force);
-float map_angle2resistance(float force) ;
+float map_angle2resistance(float force);
 
 #endif
 

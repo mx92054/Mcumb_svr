@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\BH-F103.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\BH-F103.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Fri Mar 29 06:36:54 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Fri Mar 29 06:52:20 2019
 <BR><P>
 <H3>Maximum Stack Usage =        332 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -322,7 +322,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
-<P><STRONG><a name="[a4]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
+<P><STRONG><a name="[a5]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;plant_init
 </UL>
 
@@ -363,7 +363,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_float_round
 </UL>
-<BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;plant_step
+<BR>[Called By]<UL><LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;map_angle2resistance
+<LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;plant_step
 </UL>
 
 <P><STRONG><a name="[55]"></a>__aeabi_dadd</STRONG> (Thumb, 322 bytes, Stack size 48 bytes, dadd.o(.text))
@@ -940,20 +941,24 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ModbusSvr_block_init
 </UL>
 
-<P><STRONG><a name="[a5]"></a>map_angle2resistance</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, plant.o(i.map_angle2resistance))
-<BR><BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;plant_step
+<P><STRONG><a name="[a4]"></a>map_angle2resistance</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, plant.o(i.map_angle2resistance))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = map_angle2resistance &rArr; __aeabi_fdiv
+</UL>
+<BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_fdiv
+</UL>
+<BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;plant_step
 </UL>
 
-<P><STRONG><a name="[9d]"></a>plant_init</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, plant.o(i.plant_init))
+<P><STRONG><a name="[9d]"></a>plant_init</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, plant.o(i.plant_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = plant_init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<BR>[Calls]<UL><LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[a1]"></a>plant_step</STRONG> (Thumb, 204 bytes, Stack size 88 bytes, plant.o(i.plant_step))
-<BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = plant_step &rArr; __aeabi_dsub &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
+<P><STRONG><a name="[a1]"></a>plant_step</STRONG> (Thumb, 190 bytes, Stack size 80 bytes, plant.o(i.plant_step))
+<BR><BR>[Stack]<UL><LI>Max Depth = 168<LI>Call Chain = plant_step &rArr; __aeabi_dsub &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_fdiv
 <LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_fadd
@@ -962,7 +967,7 @@ Global Symbols
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
-<LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;map_angle2resistance
+<LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;map_angle2resistance
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_fmul
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
